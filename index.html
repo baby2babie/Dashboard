@@ -9,55 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Sarabun', sans-serif;
-  background: linear-gradient(135deg, #E8F4F1 0%, #F0F4F8 50%, #E8EEF8 100%);
-  min-height: 100vh;
-  padding-bottom: 100px;
-  font-size: 18px;
-}
-.header {
-  background: linear-gradient(135deg, #1B5E56, #27A896);
-  padding: 20px 16px; color: white;
-  box-shadow: 0 4px 20px rgba(27,94,86,0.3);
-}
+body { font-family: 'Sarabun', sans-serif; background: linear-gradient(135deg, #E8F4F1 0%, #F0F4F8 50%, #E8EEF8 100%); min-height: 100vh; padding-bottom: 100px; font-size: 18px; }
+.header { background: linear-gradient(135deg, #1B5E56, #27A896); padding: 20px 16px; color: white; box-shadow: 0 4px 20px rgba(27,94,86,0.3); }
 .header h1 { font-size: 28px; font-weight: 700; }
 .header-sub { font-size: 18px; opacity: 0.85; margin-top: 4px; }
-.tab-bar {
-  display: flex;
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(10px);
-  border-bottom: 2px solid rgba(39,168,150,0.2);
-  position: sticky; top: 0; z-index: 10;
-}
-.tab {
-  flex: 1; padding: 12px 0; text-align: center;
-  font-size: 13px; font-weight: 700; color: #9CA3AF;
-  cursor: pointer; border-bottom: 4px solid transparent;
-  transition: all 0.2s; font-family: 'Sarabun', sans-serif;
-  background: none; border-top: none; border-left: none; border-right: none;
-}
+.tab-bar { display: flex; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border-bottom: 2px solid rgba(39,168,150,0.2); position: sticky; top: 0; z-index: 10; }
+.tab { flex: 1; padding: 12px 0; text-align: center; font-size: 13px; font-weight: 700; color: #9CA3AF; cursor: pointer; border-bottom: 4px solid transparent; transition: all 0.2s; font-family: 'Sarabun', sans-serif; background: none; border-top: none; border-left: none; border-right: none; }
 .tab.active { color: #27A896; border-bottom-color: #27A896; }
 .page { display: none; padding: 16px; }
 .page.active { display: block; }
-.month-select, .year-select {
-  width: 100%; padding: 16px;
-  border: 2px solid rgba(39,168,150,0.3);
-  border-radius: 16px; font-size: 20px;
-  font-family: 'Sarabun', sans-serif;
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(10px);
-  margin-bottom: 16px; color: #1F2937;
-  outline: none; font-weight: 700;
-}
-.card {
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.9);
-  border-radius: 20px;
-  padding: 20px; margin-bottom: 14px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-}
+.month-select, .year-select { width: 100%; padding: 16px; border: 2px solid rgba(39,168,150,0.3); border-radius: 16px; font-size: 20px; font-family: 'Sarabun', sans-serif; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); margin-bottom: 16px; color: #1F2937; outline: none; font-weight: 700; }
+.card { background: rgba(255,255,255,0.75); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.9); border-radius: 20px; padding: 20px; margin-bottom: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
 .card-title { font-size: 18px; color: #6B7280; margin-bottom: 10px; font-weight: 700; }
 .card-value { font-size: 36px; font-weight: 700; color: #1F2937; }
 .card-value.green { color: #16A34A; }
@@ -69,15 +31,7 @@ body {
 .progress-fill { height: 100%; background: linear-gradient(90deg, #27A896, #1D4ED8); border-radius: 99px; transition: width 0.5s; }
 .form-group { margin-bottom: 16px; }
 .form-label { font-size: 18px; font-weight: 700; color: #374151; margin-bottom: 8px; display: block; }
-.form-input {
-  width: 100%; padding: 16px;
-  border: 2px solid rgba(39,168,150,0.3);
-  border-radius: 16px; font-size: 20px;
-  font-family: 'Sarabun', sans-serif;
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(10px);
-  color: #1F2937; outline: none; font-weight: 600;
-}
+.form-input { width: 100%; padding: 16px; border: 2px solid rgba(39,168,150,0.3); border-radius: 16px; font-size: 20px; font-family: 'Sarabun', sans-serif; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); color: #1F2937; outline: none; font-weight: 600; }
 .form-input:focus { border-color: #27A896; }
 .form-input::placeholder { color: #9CA3AF; font-weight: 400; }
 select.form-input { cursor: pointer; }
@@ -85,15 +39,10 @@ select.form-input { cursor: pointer; }
 .btn-primary { background: linear-gradient(135deg, #27A896, #1D4ED8); color: white; box-shadow: 0 8px 24px rgba(39,168,150,0.4); }
 .btn-primary:disabled { background: #E5E7EB; color: #9CA3AF; box-shadow: none; cursor: not-allowed; }
 .btn-primary:active:not(:disabled) { transform: scale(0.97); }
-.toast {
-  position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-  padding: 16px 24px; border-radius: 16px; font-size: 18px;
-  display: none; z-index: 999; text-align: center;
-  max-width: 85%; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-  font-family: 'Sarabun', sans-serif; font-weight: 700; backdrop-filter: blur(10px);
-}
+.toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); padding: 16px 24px; border-radius: 16px; font-size: 18px; display: none; z-index: 999; text-align: center; max-width: 85%; box-shadow: 0 8px 32px rgba(0,0,0,0.2); font-family: 'Sarabun', sans-serif; font-weight: 700; backdrop-filter: blur(10px); }
 .toast.success { background: rgba(6,95,70,0.95); color: white; display: block; }
 .toast.error   { background: rgba(127,29,29,0.95); color: white; display: block; }
+.meter-month-bar { padding: 10px 16px; background: rgba(39,168,150,0.1); text-align: center; font-size: 15px; font-weight: 700; color: #1B5E56; border-bottom: 1px solid rgba(39,168,150,0.2); }
 .floor-tabs { display: flex; gap: 10px; padding: 16px; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(39,168,150,0.2); }
 .floor-tab { flex: 1; padding: 14px 0; border: 2px solid rgba(39,168,150,0.3); border-radius: 14px; background: rgba(255,255,255,0.8); font-size: 20px; font-weight: 700; color: #9CA3AF; cursor: pointer; text-align: center; transition: all 0.2s; font-family: 'Sarabun', sans-serif; }
 .floor-tab.active { border-color: #27A896; background: rgba(39,168,150,0.15); color: #1B5E56; }
@@ -102,22 +51,23 @@ select.form-input { cursor: pointer; }
 .progress-label { font-size: 16px; color: #6B7280; margin-bottom: 6px; display: flex; justify-content: space-between; font-weight: 700; }
 .meter-progress-bar { height: 8px; background: #E5E7EB; border-radius: 99px; overflow: hidden; }
 .meter-progress-fill { height: 100%; background: linear-gradient(90deg, #27A896, #1D4ED8); border-radius: 99px; transition: width 0.4s ease; }
-.table-wrap { padding: 8px 12px; }
+.table-wrap { padding: 8px 12px; overflow-x: auto; }
 table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
-col.col-room  { width: 25%; }
-col.col-meter { width: 25%; }
-th { padding: 6px 4px; font-size: 18px; color: #6B7280; text-align: center; font-weight: 700; }
-.room-row td { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 12px 4px; transition: background 0.3s; }
-.room-row td:first-child { border-radius: 14px 0 0 14px; font-weight: 700; font-size: 24px; color: #1F2937; text-align: center; }
-.room-row td:last-child  { border-radius: 0 14px 14px 0; font-weight: 700; font-size: 24px; color: #1F2937; text-align: center; }
+th { padding: 6px 4px; font-size: 13px; color: #6B7280; text-align: center; font-weight: 700; }
+.room-row td { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 10px 4px; transition: background 0.3s; text-align: center; vertical-align: middle; }
+.room-row td:first-child { border-radius: 14px 0 0 14px; font-weight: 700; font-size: 18px; color: #1F2937; }
+.room-row td:last-child  { border-radius: 0 14px 14px 0; font-weight: 700; font-size: 18px; color: #1F2937; }
 .room-row.saved td { background: rgba(39,168,150,0.1); }
 .room-row.saved td:first-child, .room-row.saved td:last-child { color: #27A896; }
-.saved-badge { display: none; font-size: 13px; color: #27A896; font-weight: 700; margin-top: 2px; }
+.saved-badge { display: none; font-size: 11px; color: #27A896; font-weight: 700; margin-top: 2px; }
 .room-row.saved .saved-badge { display: block; }
-input[type=number] { width: 100%; border: 2px solid rgba(39,168,150,0.3); border-radius: 12px; padding: 10px 2px; font-size: 26px; text-align: center; outline: none; -moz-appearance: textfield; font-family: 'Sarabun', sans-serif; transition: border-color 0.2s; background: rgba(255,255,255,0.9); font-weight: 700; color: #1F2937; }
+.old-val { font-size: 13px; color: #9CA3AF; font-weight: 700; }
+.has-val-badge { font-size: 10px; color: #F59E0B; font-weight: 700; margin-top: 2px; }
+input[type=number] { width: 100%; border: 2px solid rgba(39,168,150,0.3); border-radius: 10px; padding: 8px 2px; font-size: 20px; text-align: center; outline: none; -moz-appearance: textfield; font-family: 'Sarabun', sans-serif; transition: border-color 0.2s; background: rgba(255,255,255,0.9); font-weight: 700; color: #1F2937; }
 input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 input[type=number]:focus { border-color: #27A896; }
 input[type=number].saved-input { background: rgba(39,168,150,0.1); border-color: rgba(39,168,150,0.4); color: #27A896; pointer-events: none; }
+input[type=number].error-input { border-color: #DC2626 !important; background: rgba(220,38,38,0.05); }
 .result-box { margin: 4px 16px 12px; padding: 16px; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border-radius: 16px; border-left: 5px solid #27A896; display: none; }
 .result-box.show { display: block; }
 .result-title { font-size: 18px; font-weight: 700; color: #1B5E56; margin-bottom: 10px; }
@@ -161,19 +111,10 @@ input[type=number].saved-input { background: rgba(39,168,150,0.1); border-color:
 <!-- ===== TAB 1: DASHBOARD ===== -->
 <div class="page active" id="page-dashboard">
   <select class="month-select" id="month-select" onchange="loadDashboard()"></select>
-  <div class="card">
-    <div class="card-title">💰 ยอดรวมทั้งหมด</div>
-    <div class="card-value" id="d-total">-</div>
-  </div>
+  <div class="card"><div class="card-title">💰 ยอดรวมทั้งหมด</div><div class="card-value" id="d-total">-</div></div>
   <div class="row-2">
-    <div class="card">
-      <div class="card-title">✅ รับแล้ว</div>
-      <div class="card-value green" id="d-paid">-</div>
-    </div>
-    <div class="card">
-      <div class="card-title">⏳ ค้างชำระ</div>
-      <div class="card-value red" id="d-unpaid">-</div>
-    </div>
+    <div class="card"><div class="card-title">✅ รับแล้ว</div><div class="card-value green" id="d-paid">-</div></div>
+    <div class="card"><div class="card-title">⏳ ค้างชำระ</div><div class="card-value red" id="d-unpaid">-</div></div>
   </div>
   <div class="card">
     <div class="card-title">📊 อัตราการชำระ</div>
@@ -191,38 +132,23 @@ input[type=number].saved-input { background: rgba(39,168,150,0.1); border-color:
     <div class="expense-divider"></div>
     <div class="expense-row total"><span>รวมรายจ่าย</span><span id="d-exp-total">-</span></div>
   </div>
-  <div class="card">
-    <div class="card-title">📈 กำไรสุทธิ</div>
-    <div class="card-value green" id="d-net-profit">-</div>
-  </div>
+  <div class="card"><div class="card-title">📈 กำไรสุทธิ</div><div class="card-value green" id="d-net-profit">-</div></div>
   <div class="card">
     <div class="card-title">🔒 มัดจำเดือนนี้</div>
     <div class="expense-row"><span>รับ</span><span id="d-dep-in" class="text-green">-</span></div>
     <div class="expense-row"><span>คืน</span><span id="d-dep-out" class="text-red">-</span></div>
   </div>
   <div class="row-3">
-    <div class="card">
-      <div class="card-title">มีผู้เช่า</div>
-      <div class="card-value" id="d-active">-</div>
-    </div>
-    <div class="card">
-      <div class="card-title">ห้องว่าง</div>
-      <div class="card-value green" id="d-vacant">-</div>
-    </div>
-    <div class="card">
-      <div class="card-title">ย้ายออก</div>
-      <div class="card-value blue" id="d-moveout">-</div>
-    </div>
+    <div class="card"><div class="card-title">มีผู้เช่า</div><div class="card-value" id="d-active">-</div></div>
+    <div class="card"><div class="card-title">ห้องว่าง</div><div class="card-value green" id="d-vacant">-</div></div>
+    <div class="card"><div class="card-title">ย้ายออก</div><div class="card-value blue" id="d-moveout">-</div></div>
   </div>
 </div>
 
 <!-- ===== TAB 2: EXPENSE ===== -->
-  <div class="page" id="page-expense">
-  <div class="card"> 
-    <div class="form-group">
-      <label class="form-label">📅 วันที่</label>
-      <input type="date" class="form-input" id="exp-date">
-    </div>
+<div class="page" id="page-expense">
+  <div class="card">
+    <div class="form-group"><label class="form-label">📅 วันที่</label><input type="date" class="form-input" id="exp-date"></div>
     <div class="form-group">
       <label class="form-label">📁 Category</label>
       <select class="form-input" id="exp-category">
@@ -237,24 +163,16 @@ input[type=number].saved-input { background: rgba(39,168,150,0.1); border-color:
         <option value="Other">Other</option>
       </select>
     </div>
-    <div class="form-group">
-      <label class="form-label">📝 Item</label>
-      <input type="text" class="form-input" id="exp-item" placeholder="รายละเอียด เช่น ค่าน้ำประปา">
-    </div>
-    <div class="form-group">
-      <label class="form-label">💵 Amount (บาท)</label>
-      <input type="number" class="form-input" id="exp-amount" placeholder="0.00" inputmode="decimal">
-    </div>
-    <div class="form-group">
-      <label class="form-label">📌 Note (ไม่บังคับ)</label>
-      <input type="text" class="form-input" id="exp-note" placeholder="หมายเหตุ">
-    </div>
+    <div class="form-group"><label class="form-label">📝 Item</label><input type="text" class="form-input" id="exp-item" placeholder="รายละเอียด เช่น ค่าน้ำประปา"></div>
+    <div class="form-group"><label class="form-label">💵 Amount (บาท)</label><input type="number" class="form-input" id="exp-amount" placeholder="0.00" inputmode="decimal"></div>
+    <div class="form-group"><label class="form-label">📌 Note (ไม่บังคับ)</label><input type="text" class="form-input" id="exp-note" placeholder="หมายเหตุ"></div>
     <button class="btn btn-primary" id="btn-expense" onclick="saveExpense()">💾 บันทึก Expense</button>
   </div>
 </div>
 
 <!-- ===== TAB 3: METER ===== -->
 <div class="page" id="page-meter">
+  <div class="meter-month-bar">📅 บันทึกมิเตอร์เดือน: <span id="meter-month">...</span></div>
   <div class="floor-tabs">
     <button class="floor-tab active" id="tab1" onclick="switchFloor(1)">ชั้น 1</button>
     <button class="floor-tab"        id="tab2" onclick="switchFloor(2)">ชั้น 2</button>
@@ -268,13 +186,20 @@ input[type=number].saved-input { background: rgba(39,168,150,0.1); border-color:
     <div class="meter-progress-bar"><div class="meter-progress-fill" id="prog-fill" style="width:0%"></div></div>
   </div>
   <div class="table-wrap">
-    <table>
+    <table style="min-width:340px">
       <colgroup>
-        <col class="col-room"><col class="col-meter">
-        <col class="col-meter"><col class="col-room">
+        <col style="width:15%"><col style="width:14%"><col style="width:21%">
+        <col style="width:14%"><col style="width:21%"><col style="width:15%">
       </colgroup>
       <thead>
-        <tr><th></th><th>💧 น้ำ</th><th>⚡ ไฟ</th><th></th></tr>
+        <tr>
+          <th></th>
+          <th style="color:#9CA3AF;font-size:11px">น้ำเก่า</th>
+          <th>💧 น้ำ</th>
+          <th style="color:#9CA3AF;font-size:11px">ไฟเก่า</th>
+          <th>⚡ ไฟ</th>
+          <th></th>
+        </tr>
       </thead>
       <tbody id="meter-table"></tbody>
     </table>
@@ -291,25 +216,12 @@ input[type=number].saved-input { background: rgba(39,168,150,0.1); border-color:
   <div class="card">
     <div class="card-title">📊 กราฟรายปี</div>
     <canvas id="year-bar-chart" height="220"></canvas>
-    <div style="margin-top:16px;">
-      <div class="card-title">📈 เปรียบเทียบปีก่อน (กำไร)</div>
-      <canvas id="year-line-chart" height="160"></canvas>
-    </div>
+    <div style="margin-top:16px;"><div class="card-title">📈 เปรียบเทียบปีก่อน (กำไร)</div><canvas id="year-line-chart" height="160"></canvas></div>
   </div>
   <div class="card">
     <div class="card-title">🗂 ตารางเปรียบเทียบ 2 ปี</div>
     <table class="compare-table">
-      <thead>
-        <tr>
-          <th>เดือน</th>
-          <th id="th-cur-income">รับ (ปีนี้)</th>
-          <th id="th-prev-income">รับ (ปีก่อน)</th>
-          <th id="th-cur-expense">จ่าย (ปีนี้)</th>
-          <th id="th-prev-expense">จ่าย (ปีก่อน)</th>
-          <th id="th-cur-profit">กำไร (ปีนี้)</th>
-          <th id="th-prev-profit">กำไร (ปีก่อน)</th>
-        </tr>
-      </thead>
+      <thead><tr><th>เดือน</th><th id="th-cur-income">รับ (ปีนี้)</th><th id="th-prev-income">รับ (ปีก่อน)</th><th id="th-cur-expense">จ่าย (ปีนี้)</th><th id="th-prev-expense">จ่าย (ปีก่อน)</th><th id="th-cur-profit">กำไร (ปีนี้)</th><th id="th-prev-profit">กำไร (ปีก่อน)</th></tr></thead>
       <tbody id="compare-tbody"></tbody>
     </table>
   </div>
@@ -318,27 +230,14 @@ input[type=number].saved-input { background: rgba(39,168,150,0.1); border-color:
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-//  CONFIG
-// ============================================================
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx57fi00n2RKu7b5jHu67vzUVwrez1cx6RhW0lvvM9cIkt6_amJzMoVJOJvrwD7imHBnA/exec';
 const LIFF_ID = '2004478373-Knd7GWOk';
 
-// ============================================================
-//  API helper — แทน google.script.run
-// ============================================================
 async function callGAS(action, params = {}) {
-  const res = await fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action, ...params })
-  });
+  const res = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action, ...params }) });
   return res.json();
 }
 
-// ============================================================
-//  INIT
-// ============================================================
 async function init() {
   switchTab('dashboard');
   initMonthSelect();
@@ -359,42 +258,25 @@ function fetchLiffProfile() {
     .then(profile => {
       if (!profile) return;
       document.getElementById('admin-name').textContent = 'สวัสดีค่ะ คุณ' + profile.displayName;
-      const whoSel = document.getElementById('exp-who');
-      if (whoSel) {
-        Array.from(whoSel.options).forEach(opt => {
-          if (opt.value && profile.displayName.includes(opt.value)) whoSel.value = opt.value;
-        });
-      }
     })
-    .catch(e => {
-      console.warn('LIFF:', e.message);
-      document.getElementById('admin-name').textContent = 'Admin Dashboard';
-    });
+    .catch(() => { document.getElementById('admin-name').textContent = 'Admin Dashboard'; });
 }
 
-// ============================================================
-//  TAB
-// ============================================================
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('active', ['dashboard','expense','meter','yearly'][i] === tab);
-  });
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['dashboard','expense','meter','yearly'][i] === tab));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + tab).classList.add('active');
   document.querySelector('.btn-wrap').style.display = tab === 'meter' ? 'flex' : 'none';
   if (tab === 'yearly') loadYearly();
+  if (tab === 'meter')  loadMeterData();
 }
 
-// ============================================================
-//  DASHBOARD
-// ============================================================
 function initMonthSelect() {
   const sel = document.getElementById('month-select');
   const now = new Date();
-  const th  = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
-               'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const th  = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
   for (let i = 0; i < 12; i++) {
-    const d   = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const val = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
     const opt = document.createElement('option');
     opt.value = val;
@@ -406,8 +288,7 @@ function initMonthSelect() {
 
 async function loadDashboard() {
   const month = document.getElementById('month-select').value;
-  ['d-total','d-paid','d-unpaid','d-percent','d-active','d-vacant','d-moveout','d-net-profit']
-    .forEach(id => { document.getElementById(id).textContent = '...'; });
+  ['d-total','d-paid','d-unpaid','d-percent','d-active','d-vacant','d-moveout','d-net-profit'].forEach(id => { document.getElementById(id).textContent = '...'; });
   try {
     const data = await callGAS('getDashboardData', { monthKey: month });
     const fmt = n => Number(n).toLocaleString('th-TH') + ' บาท';
@@ -433,64 +314,62 @@ async function loadDashboard() {
     profitEl.className   = 'card-value ' + (data.netProfit >= 0 ? 'green' : 'red');
     document.getElementById('d-dep-in').textContent  = fmt(data.depIn);
     document.getElementById('d-dep-out').textContent = fmt(data.depOut);
-  } catch(err) {
-    showToast('❌ โหลดข้อมูลไม่ได้: ' + err.message, 'error');
-  }
+  } catch(err) { showToast('❌ โหลดข้อมูลไม่ได้: ' + err.message, 'error'); }
 }
 
-// ============================================================
-//  EXPENSE
-// ============================================================
 function initExpenseDate() {
   const today = new Date();
-  const y = today.getFullYear();
-  const m = String(today.getMonth()+1).padStart(2,'0');
-  const d = String(today.getDate()).padStart(2,'0');
-  document.getElementById('exp-date').value = y + '-' + m + '-' + d;
+  document.getElementById('exp-date').value = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
 }
 
 async function saveExpense() {
-  const date     = document.getElementById('exp-date').value;
+  const date = document.getElementById('exp-date').value;
   const category = document.getElementById('exp-category').value;
-  const item     = document.getElementById('exp-item').value.trim();
-  const amount   = document.getElementById('exp-amount').value;
-  const note     = document.getElementById('exp-note').value.trim();
-  const nameEl = document.getElementById('admin-name').textContent;
-  const who    = nameEl.replace('สวัสดีค่ะ คุณ', '').trim();
-  if (!date || !category || !item || !amount) {
-    showToast('⚠️ กรุณากรอกข้อมูลให้ครบค่ะ', 'error'); return;
-  }
-
+  const item = document.getElementById('exp-item').value.trim();
+  const amount = document.getElementById('exp-amount').value;
+  const note = document.getElementById('exp-note').value.trim();
+  const who  = document.getElementById('admin-name').textContent.replace('สวัสดีค่ะ คุณ', '').trim();
+  if (!date || !category || !item || !amount) { showToast('⚠️ กรุณากรอกข้อมูลให้ครบค่ะ', 'error'); return; }
   const month = date.substring(0, 7);
-  const btn   = document.getElementById('btn-expense');
+  const btn = document.getElementById('btn-expense');
   btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...';
-
   try {
     const result = await callGAS('saveExpenseData', { date, month, category, item, amount, note, who });
     if (result.success) {
       showToast('✅ บันทึก Expense เรียบร้อยค่ะ');
-      document.getElementById('exp-item').value   = '';
+      document.getElementById('exp-item').value = '';
       document.getElementById('exp-amount').value = '';
-      document.getElementById('exp-note').value   = '';
-    } else {
-      showToast('❌ ' + result.message, 'error');
-    }
-  } catch(err) {
-    showToast('❌ เกิดข้อผิดพลาด: ' + err.message, 'error');
-  }
+      document.getElementById('exp-note').value = '';
+    } else { showToast('❌ ' + result.message, 'error'); }
+  } catch(err) { showToast('❌ เกิดข้อผิดพลาด: ' + err.message, 'error'); }
   btn.disabled = false; btn.textContent = '💾 บันทึก Expense';
 }
 
-// ============================================================
-//  METER
-// ============================================================
-const ROOMS = {
-  1: [101,102,103,104,105,106,107,108,109,110],
-  2: [201,202,203,204,205,206,207,208,209,210],
-  3: [301,302,303,304,305,306,307,308,309,310]
-};
+// ===== METER =====
+const ROOMS = { 1:[101,102,103,104,105,106,107,108,109,110], 2:[201,202,203,204,205,206,207,208,209,210], 3:[301,302,303,304,305,306,307,308,309,310] };
 const savedRooms = { 1: new Set(), 2: new Set(), 3: new Set() };
+let meterOldMap  = {};
 let currentFloor = 1;
+
+async function loadMeterData() {
+  document.getElementById('meter-month').textContent = '⏳';
+  try {
+    const result = await callGAS('getMeterData');
+    if (!result.success) return;
+    const monthKey = (result.sheetName || '').replace('BILL_','').replace('_','-');
+    document.getElementById('meter-month').textContent = formatThaiMonth(monthKey);
+    meterOldMap = {};
+    result.data.forEach(r => { meterOldMap[r.room] = r; });
+    renderTable(currentFloor);
+  } catch(e) { document.getElementById('meter-month').textContent = '-'; }
+}
+
+function formatThaiMonth(k) {
+  if (!k || !k.includes('-')) return '-';
+  const th = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const [y,m] = k.split('-');
+  return th[Number(m)-1] + ' ' + (Number(y)+543);
+}
 
 function switchFloor(floor) {
   currentFloor = floor;
@@ -505,17 +384,41 @@ function renderTable(floor) {
   tbody.innerHTML = '';
   ROOMS[floor].forEach(room => {
     const isSaved = savedRooms[floor].has(room);
+    const d = meterOldMap[String(room)] || { waterOld: '?', elecOld: '?', waterNew: 0, elecNew: 0 };
+    const hasNew = d.waterNew > 0 || d.elecNew > 0;
     const tr = document.createElement('tr');
     tr.className = 'room-row' + (isSaved ? ' saved' : '');
     tr.id = 'row_' + room;
-    tr.innerHTML = `
-      <td>${isSaved?'✅':''}${room}<div class="saved-badge">✓</div></td>
-      <td><input type="number" id="w_${room}" class="${isSaved?'saved-input':''}" placeholder="${isSaved?'✓':''}" inputmode="numeric" ${isSaved?'disabled':''}></td>
-      <td><input type="number" id="e_${room}" class="${isSaved?'saved-input':''}" placeholder="${isSaved?'✓':''}" inputmode="numeric" ${isSaved?'disabled':''}></td>
-      <td>${isSaved?'✅':''}${room}</td>
-    `;
+    if (isSaved) {
+      tr.innerHTML = `
+        <td>${room}<div class="saved-badge">✓</div></td>
+        <td class="old-val">${d.waterOld}</td>
+        <td><input type="number" id="w_${room}" class="saved-input" placeholder="✓" disabled></td>
+        <td class="old-val">${d.elecOld}</td>
+        <td><input type="number" id="e_${room}" class="saved-input" placeholder="✓" disabled></td>
+        <td>${room}<div class="saved-badge">✓</div></td>`;
+    } else {
+      tr.innerHTML = `
+        <td>${room}${hasNew ? '<div class="has-val-badge">มีค่า</div>' : ''}</td>
+        <td class="old-val">${d.waterOld}</td>
+        <td><input type="number" id="w_${room}" placeholder="ใหม่" inputmode="numeric" oninput="validateMeter(this,${d.waterOld})"></td>
+        <td class="old-val">${d.elecOld}</td>
+        <td><input type="number" id="e_${room}" placeholder="ใหม่" inputmode="numeric" oninput="validateMeter(this,${d.elecOld})"></td>
+        <td>${room}${hasNew ? '<div class="has-val-badge">มีค่า</div>' : ''}</td>`;
+    }
     tbody.appendChild(tr);
   });
+}
+
+function validateMeter(input, oldVal) {
+  const val = Number(input.value);
+  if (input.value !== '' && val < Number(oldVal)) {
+    input.classList.add('error-input');
+    input.title = 'ต้องมากกว่าค่าเก่า (' + oldVal + ')';
+  } else {
+    input.classList.remove('error-input');
+    input.title = '';
+  }
 }
 
 function updateProgress(floor) {
@@ -527,69 +430,62 @@ function updateProgress(floor) {
   document.getElementById('prog-fill').style.width  = pct + '%';
   [1,2,3].forEach(f => {
     const cnt = savedRooms[f].size;
-    const tab = document.getElementById('tab'+f);
-    tab.innerHTML = `ชั้น ${f}` + (cnt>0 ? ` <span class="done-count">${cnt}</span>` : '');
+    document.getElementById('tab'+f).innerHTML = `ชั้น ${f}` + (cnt>0 ? ` <span class="done-count">${cnt}</span>` : '');
   });
 }
 
 async function saveMeter() {
   const btn = document.getElementById('btn-save');
   const meters = [];
+  let hasError = false;
   ROOMS[currentFloor].forEach(room => {
     if (savedRooms[currentFloor].has(room)) return;
-    const w = document.getElementById('w_'+room)?.value;
-    const e = document.getElementById('e_'+room)?.value;
+    const wEl = document.getElementById('w_'+room);
+    const eEl = document.getElementById('e_'+room);
+    if (wEl?.classList.contains('error-input') || eEl?.classList.contains('error-input')) { hasError = true; return; }
+    const w = wEl?.value, e = eEl?.value;
     if (w||e) meters.push({ room: String(room), water: w||"0", electric: e||"0" });
   });
-  if (meters.length===0) { showToast('⚠️ ไม่มีข้อมูลใหม่ที่ต้องบันทึกค่ะ','error'); return; }
+  if (hasError) { showToast('⚠️ มีค่ามิเตอร์ต่ำกว่าค่าเก่า กรุณาตรวจสอบค่ะ', 'error'); return; }
+  if (!meters.length) { showToast('⚠️ ไม่มีข้อมูลใหม่ที่ต้องบันทึกค่ะ','error'); return; }
   btn.disabled=true; btn.textContent='⏳ กำลังบันทึก...';
   try {
     const result = await callGAS('saveMeterData', { floor: currentFloor, meters });
     result.saved.forEach(s => {
       savedRooms[currentFloor].add(Number(s.room));
+      if (meterOldMap[s.room]) { meterOldMap[s.room].waterNew = s.waterNew; meterOldMap[s.room].elecNew = s.elecNew; }
       const row = document.getElementById('row_'+s.room);
       if (row) {
         row.classList.add('saved');
-        row.cells[0].innerHTML=`✅${s.room}<div class="saved-badge">✓</div>`;
-        row.cells[3].innerHTML=`✅${s.room}`;
-        const wInput=document.getElementById('w_'+s.room);
-        const eInput=document.getElementById('e_'+s.room);
-        if(wInput){wInput.classList.add('saved-input');wInput.disabled=true;wInput.placeholder='✓';wInput.value='';}
-        if(eInput){eInput.classList.add('saved-input');eInput.disabled=true;eInput.placeholder='✓';eInput.value='';}
+        row.cells[0].innerHTML = `${s.room}<div class="saved-badge">✓</div>`;
+        row.cells[5].innerHTML = `${s.room}<div class="saved-badge">✓</div>`;
+        ['w_','e_'].forEach(p => { const el = document.getElementById(p+s.room); if(el){el.classList.add('saved-input');el.disabled=true;el.placeholder='✓';el.value='';} });
       }
     });
     updateProgress(currentFloor);
-    const box=document.getElementById('result-box');
+    const box = document.getElementById('result-box');
     box.classList.add('show');
-    let html=`<div class="result-title">✅ บันทึกแล้ว ${result.saved.length} ห้อง</div>`;
-    result.saved.forEach(s=>{
-      html+=`<div class="result-item">🏠 ห้อง ${s.room} 💧 ${s.waterOld}→${s.waterNew} <span class="unit-badge">+${s.wUnit}</span> ⚡ ${s.elecOld}→${s.elecNew} <span class="unit-badge">+${s.eUnit}</span></div>`;
-    });
-    result.errors.forEach(err=>{html+=`<div class="result-item err">❌ ${err}</div>`;});
-    box.innerHTML=html;
+    let html = `<div class="result-title">✅ บันทึกแล้ว ${result.saved.length} ห้อง</div>`;
+    result.saved.forEach(s => { html += `<div class="result-item">🏠 ห้อง ${s.room} 💧 ${s.waterOld}→${s.waterNew} <span class="unit-badge">+${s.wUnit}</span> ⚡ ${s.elecOld}→${s.elecNew} <span class="unit-badge">+${s.eUnit}</span></div>`; });
+    result.errors.forEach(e => { html += `<div class="result-item err">❌ ${e}</div>`; });
+    box.innerHTML = html;
     showToast(`✅ บันทึก ${result.saved.length} ห้องเรียบร้อยค่ะ`);
-  } catch(err) {
-    showToast('❌ เกิดข้อผิดพลาด: '+(err.message||err),'error',4000);
-  }
+  } catch(err) { showToast('❌ '+(err.message||err),'error',4000); }
   btn.disabled=false; btn.textContent='💾 บันทึกชั้นนี้';
 }
 
-// ============================================================
-//  YEARLY
-// ============================================================
-const MONTH_LABELS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.',
-                      'ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-let barChart  = null;
-let lineChart = null;
+// ===== YEARLY =====
+const MONTH_LABELS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+let barChart = null, lineChart = null;
 
 function initYearSelect() {
   const sel = document.getElementById('year-select');
   const now = new Date().getFullYear();
   for (let i = 0; i < 3; i++) {
-    const y   = now - i;
+    const y = now - i;
     const opt = document.createElement('option');
     opt.value = y;
-    opt.textContent = 'พ.ศ. ' + (y + 543) + '  (ค.ศ. ' + y + ')';
+    opt.textContent = 'พ.ศ. ' + (y+543) + '  (ค.ศ. ' + y + ')';
     if (i === 0) opt.selected = true;
     sel.appendChild(opt);
   }
@@ -601,149 +497,54 @@ async function loadYearly() {
     const data = await callGAS('getYearCompareData', { year: Number(year) });
     renderYearCharts(data, year);
     renderCompareTable(data, year);
-  } catch(err) {
-    showToast('❌ โหลดข้อมูลไม่ได้: ' + err.message, 'error');
-  }
+  } catch(err) { showToast('❌ โหลดข้อมูลไม่ได้: ' + err.message, 'error'); }
 }
 
 function renderYearCharts(data, year) {
-  const thYear     = Number(year) + 543;
-  const thYearPrev = Number(year) - 1 + 543;
-  const cur  = data.current;
-  const prev = data.prev;
-
-  function toArray(monthlyData, key) {
-    const map = {};
-    if (monthlyData) monthlyData.forEach(m => { map[m.month] = m[key] || 0; });
-    return MONTH_LABELS.map(l => map[l] || 0);
-  }
-
-  const curIncome  = toArray(cur?.monthlyData,  'income');
-  const curExpense = toArray(cur?.monthlyData,  'expense');
-  const curProfit  = toArray(cur?.monthlyData,  'profit');
-  const prevProfit = toArray(prev?.monthlyData, 'profit');
-
-  const barCtx = document.getElementById('year-bar-chart').getContext('2d');
+  const thYear = Number(year)+543, thYearPrev = Number(year)-1+543;
+  const cur = data.current, prev = data.prev;
+  function toArr(md, key) { const m={}; if(md) md.forEach(x=>{m[x.month]=x[key]||0;}); return MONTH_LABELS.map(l=>m[l]||0); }
+  const curIncome=toArr(cur?.monthlyData,'income'), curExpense=toArr(cur?.monthlyData,'expense'), curProfit=toArr(cur?.monthlyData,'profit'), prevProfit=toArr(prev?.monthlyData,'profit');
+  const bCtx = document.getElementById('year-bar-chart').getContext('2d');
   if (barChart) barChart.destroy();
-  barChart = new Chart(barCtx, {
-    type: 'bar',
-    data: {
-      labels: MONTH_LABELS,
-      datasets: [
-        { label: 'รายรับ',  data: curIncome,  backgroundColor: 'rgba(22,163,74,0.7)',  borderRadius: 4 },
-        { label: 'รายจ่าย', data: curExpense, backgroundColor: 'rgba(220,38,38,0.7)',  borderRadius: 4 },
-        { label: 'กำไร',    data: curProfit,  backgroundColor: 'rgba(29,78,216,0.7)',  borderRadius: 4 }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top', labels: { font: { family: 'Sarabun', size: 13 } } },
-        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + Number(ctx.raw).toLocaleString('th-TH') + ' บาท' } }
-      },
-      scales: {
-        x: { ticks: { font: { family: 'Sarabun', size: 12 } } },
-        y: { ticks: { font: { family: 'Sarabun', size: 11 }, callback: v => Number(v).toLocaleString('th-TH') } }
-      }
-    }
-  });
-
-  const lineCtx = document.getElementById('year-line-chart').getContext('2d');
+  barChart = new Chart(bCtx, { type:'bar', data:{ labels:MONTH_LABELS, datasets:[{label:'รายรับ',data:curIncome,backgroundColor:'rgba(22,163,74,0.7)',borderRadius:4},{label:'รายจ่าย',data:curExpense,backgroundColor:'rgba(220,38,38,0.7)',borderRadius:4},{label:'กำไร',data:curProfit,backgroundColor:'rgba(29,78,216,0.7)',borderRadius:4}]}, options:{ responsive:true, plugins:{legend:{position:'top',labels:{font:{family:'Sarabun',size:13}}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+Number(ctx.raw).toLocaleString('th-TH')+' บาท'}}}, scales:{x:{ticks:{font:{family:'Sarabun',size:12}}},y:{ticks:{font:{family:'Sarabun',size:11},callback:v=>Number(v).toLocaleString('th-TH')}}}}});
+  const lCtx = document.getElementById('year-line-chart').getContext('2d');
   if (lineChart) lineChart.destroy();
-  lineChart = new Chart(lineCtx, {
-    type: 'line',
-    data: {
-      labels: MONTH_LABELS,
-      datasets: [
-        { label: 'กำไร พ.ศ. ' + thYear,     data: curProfit,  borderColor: '#1D4ED8', backgroundColor: 'rgba(29,78,216,0.1)',   borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
-        { label: 'กำไร พ.ศ. ' + thYearPrev, data: prevProfit, borderColor: '#9CA3AF', backgroundColor: 'rgba(156,163,175,0.1)', borderWidth: 2, pointRadius: 4, tension: 0.3, borderDash: [5,5], fill: false }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top', labels: { font: { family: 'Sarabun', size: 13 } } },
-        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + Number(ctx.raw).toLocaleString('th-TH') + ' บาท' } }
-      },
-      scales: {
-        x: { ticks: { font: { family: 'Sarabun', size: 12 } } },
-        y: { ticks: { font: { family: 'Sarabun', size: 11 }, callback: v => Number(v).toLocaleString('th-TH') } }
-      }
-    }
-  });
+  lineChart = new Chart(lCtx, { type:'line', data:{ labels:MONTH_LABELS, datasets:[{label:'กำไร พ.ศ. '+thYear,data:curProfit,borderColor:'#1D4ED8',backgroundColor:'rgba(29,78,216,0.1)',borderWidth:2,pointRadius:4,tension:0.3,fill:true},{label:'กำไร พ.ศ. '+thYearPrev,data:prevProfit,borderColor:'#9CA3AF',backgroundColor:'rgba(156,163,175,0.1)',borderWidth:2,pointRadius:4,tension:0.3,borderDash:[5,5],fill:false}]}, options:{ responsive:true, plugins:{legend:{position:'top',labels:{font:{family:'Sarabun',size:13}}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+Number(ctx.raw).toLocaleString('th-TH')+' บาท'}}}, scales:{x:{ticks:{font:{family:'Sarabun',size:12}}},y:{ticks:{font:{family:'Sarabun',size:11},callback:v=>Number(v).toLocaleString('th-TH')}}}}});
 }
 
 function renderCompareTable(data, year) {
-  const thYear     = Number(year) + 543;
-  const thYearPrev = Number(year) - 1 + 543;
-  const cur  = data.current;
-  const prev = data.prev;
-
-  document.getElementById('th-cur-income').textContent   = 'รับ '   + thYear;
-  document.getElementById('th-prev-income').textContent  = 'รับ '   + thYearPrev;
-  document.getElementById('th-cur-expense').textContent  = 'จ่าย '  + thYear;
-  document.getElementById('th-prev-expense').textContent = 'จ่าย '  + thYearPrev;
-  document.getElementById('th-cur-profit').textContent   = 'กำไร '  + thYear;
-  document.getElementById('th-prev-profit').textContent  = 'กำไร '  + thYearPrev;
-
-  function toMap(monthlyData, key) {
-    const map = {};
-    if (monthlyData) monthlyData.forEach(m => { map[m.month] = m[key] || 0; });
-    return map;
-  }
-
-  const curIncome   = toMap(cur?.monthlyData,  'income');
-  const curExpense  = toMap(cur?.monthlyData,  'expense');
-  const curProfit   = toMap(cur?.monthlyData,  'profit');
-  const prevIncome  = toMap(prev?.monthlyData, 'income');
-  const prevExpense = toMap(prev?.monthlyData, 'expense');
-  const prevProfit  = toMap(prev?.monthlyData, 'profit');
-
-  const fmt = n => n ? Number(n).toLocaleString('th-TH') : '-';
-  const pc  = n => n > 0 ? '#16A34A' : n < 0 ? '#DC2626' : '#6B7280';
-
-  const tbody = document.getElementById('compare-tbody');
-  tbody.innerHTML = '';
-
-  const allMonths    = new Set([...Object.keys(curIncome), ...Object.keys(prevIncome)]);
-  const sortedMonths = MONTH_LABELS.filter(m => allMonths.has(m));
-
-  let totCI=0,totPI=0,totCE=0,totPE=0,totCP=0,totPP=0;
-  sortedMonths.forEach(m => {
-    const ci=curIncome[m]||0, pi=prevIncome[m]||0;
-    const ce=curExpense[m]||0, pe=prevExpense[m]||0;
-    const cp=curProfit[m]||0, pp=prevProfit[m]||0;
-    totCI+=ci; totPI+=pi; totCE+=ce; totPE+=pe; totCP+=cp; totPP+=pp;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${m}</td>
-      <td class="text-income">${fmt(ci)}</td>
-      <td style="color:#6B7280">${fmt(pi)}</td>
-      <td class="text-expense">${fmt(ce)}</td>
-      <td style="color:#9CA3AF">${fmt(pe)}</td>
-      <td style="color:${pc(cp)}">${fmt(cp)}</td>
-      <td style="color:${pc(pp)}">${fmt(pp)}</td>
-    `;
+  const thYear=Number(year)+543, thYearPrev=Number(year)-1+543;
+  const cur=data.current, prev=data.prev;
+  document.getElementById('th-cur-income').textContent  = 'รับ '+thYear;
+  document.getElementById('th-prev-income').textContent = 'รับ '+thYearPrev;
+  document.getElementById('th-cur-expense').textContent  = 'จ่าย '+thYear;
+  document.getElementById('th-prev-expense').textContent = 'จ่าย '+thYearPrev;
+  document.getElementById('th-cur-profit').textContent  = 'กำไร '+thYear;
+  document.getElementById('th-prev-profit').textContent = 'กำไร '+thYearPrev;
+  function toMap(md,key){const m={};if(md)md.forEach(x=>{m[x.month]=x[key]||0;});return m;}
+  const cI=toMap(cur?.monthlyData,'income'),cE=toMap(cur?.monthlyData,'expense'),cP=toMap(cur?.monthlyData,'profit');
+  const pI=toMap(prev?.monthlyData,'income'),pE=toMap(prev?.monthlyData,'expense'),pP=toMap(prev?.monthlyData,'profit');
+  const fmt=n=>n?Number(n).toLocaleString('th-TH'):'-';
+  const pc=n=>n>0?'#16A34A':n<0?'#DC2626':'#6B7280';
+  const tbody=document.getElementById('compare-tbody');
+  tbody.innerHTML='';
+  const all=new Set([...Object.keys(cI),...Object.keys(pI)]);
+  const sorted=MONTH_LABELS.filter(m=>all.has(m));
+  let tCI=0,tPI=0,tCE=0,tPE=0,tCP=0,tPP=0;
+  sorted.forEach(m=>{
+    const ci=cI[m]||0,pi=pI[m]||0,ce=cE[m]||0,pe=pE[m]||0,cp=cP[m]||0,pp=pP[m]||0;
+    tCI+=ci;tPI+=pi;tCE+=ce;tPE+=pe;tCP+=cp;tPP+=pp;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${m}</td><td class="text-income">${fmt(ci)}</td><td style="color:#6B7280">${fmt(pi)}</td><td class="text-expense">${fmt(ce)}</td><td style="color:#9CA3AF">${fmt(pe)}</td><td style="color:${pc(cp)}">${fmt(cp)}</td><td style="color:${pc(pp)}">${fmt(pp)}</td>`;
     tbody.appendChild(tr);
   });
-
-  const tfr = document.createElement('tr');
-  tfr.style.background = '#F9FAFB';
-  tfr.innerHTML = `
-    <td>รวม</td>
-    <td class="text-income">${fmt(totCI)}</td>
-    <td style="color:#6B7280">${fmt(totPI)}</td>
-    <td class="text-expense">${fmt(totCE)}</td>
-    <td style="color:#9CA3AF">${fmt(totPE)}</td>
-    <td style="color:${pc(totCP)}">${fmt(totCP)}</td>
-    <td style="color:${pc(totPP)}">${fmt(totPP)}</td>
-  `;
+  const tfr=document.createElement('tr');
+  tfr.style.background='#F9FAFB';
+  tfr.innerHTML=`<td>รวม</td><td class="text-income">${fmt(tCI)}</td><td style="color:#6B7280">${fmt(tPI)}</td><td class="text-expense">${fmt(tCE)}</td><td style="color:#9CA3AF">${fmt(tPE)}</td><td style="color:${pc(tCP)}">${fmt(tCP)}</td><td style="color:${pc(tPP)}">${fmt(tPP)}</td>`;
   tbody.appendChild(tfr);
 }
 
-// ============================================================
-//  UTILS
-// ============================================================
 function showToast(msg, type='success', duration=3000) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = 'toast ' + type;
