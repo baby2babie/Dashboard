@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<script src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: linear-gradient(135deg, #E8F4F1 0%, #F0F4F8 50%, #E8EEF8 100%);
+  min-height: 100vh;
+  padding-bottom: 100px;
+  font-size: 18px;
+}
+.header {
+  background: linear-gradient(135deg, #1B5E56, #27A896);
+  padding: 20px 16px; color: white;
+  box-shadow: 0 4px 20px rgba(27,94,86,0.3);
+}
+.header h1 { font-size: 28px; font-weight: 700; }
+.header-sub { font-size: 18px; opacity: 0.85; margin-top: 4px; }
+.tab-bar {
+  display: flex;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid rgba(39,168,150,0.2);
+  position: sticky; top: 0; z-index: 10;
+}
+.tab {
+  flex: 1; padding: 12px 0; text-align: center;
+  font-size: 13px; font-weight: 700; color: #9CA3AF;
+  cursor: pointer; border-bottom: 4px solid transparent;
+  transition: all 0.2s; font-family: 'Sarabun', sans-serif;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.tab.active { color: #27A896; border-bottom-color: #27A896; }
+.page { display: none; padding: 16px; }
+.page.active { display: block; }
+.month-select, .year-select {
+  width: 100%; padding: 16px;
+  border: 2px solid rgba(39,168,150,0.3);
+  border-radius: 16px; font-size: 20px;
+  font-family: 'Sarabun', sans-serif;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  margin-bottom: 16px; color: #1F2937;
+  outline: none; font-weight: 700;
+}
+.card {
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 20px;
+  padding: 20px; margin-bottom: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+.card-title { font-size: 18px; color: #6B7280; margin-bottom: 10px; font-weight: 700; }
+.card-value { font-size: 36px; font-weight: 700; color: #1F2937; }
+.card-value.green { color: #16A34A; }
+.card-value.red   { color: #DC2626; }
+.card-value.blue  { color: #1D4ED8; }
+.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.progress-bar { height: 12px; background: #E5E7EB; border-radius: 99px; overflow: hidden; margin-top: 12px; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #27A896, #1D4ED8); border-radius: 99px; transition: width 0.5s; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 18px; font-weight: 700; color: #374151; margin-bottom: 8px; display: block; }
+.form-input {
+  width: 100%; padding: 16px;
+  border: 2px solid rgba(39,168,150,0.3);
+  border-radius: 16px; font-size: 20px;
+  font-family: 'Sarabun', sans-serif;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  color: #1F2937; outline: none; font-weight: 600;
+}
+.form-input:focus { border-color: #27A896; }
+.form-input::placeholder { color: #9CA3AF; font-weight: 400; }
+select.form-input { cursor: pointer; }
+.btn { width: 100%; padding: 20px; border: none; border-radius: 16px; font-size: 22px; font-weight: 700; cursor: pointer; font-family: 'Sarabun', sans-serif; transition: all 0.2s; }
+.btn-primary { background: linear-gradient(135deg, #27A896, #1D4ED8); color: white; box-shadow: 0 8px 24px rgba(39,168,150,0.4); }
+.btn-primary:disabled { background: #E5E7EB; color: #9CA3AF; box-shadow: none; cursor: not-allowed; }
+.btn-primary:active:not(:disabled) { transform: scale(0.97); }
+.toast {
+  position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+  padding: 16px 24px; border-radius: 16px; font-size: 18px;
+  display: none; z-index: 999; text-align: center;
+  max-width: 85%; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  font-family: 'Sarabun', sans-serif; font-weight: 700; backdrop-filter: blur(10px);
+}
+.toast.success { background: rgba(6,95,70,0.95); color: white; display: block; }
+.toast.error   { background: rgba(127,29,29,0.95); color: white; display: block; }
+.floor-tabs { display: flex; gap: 10px; padding: 16px; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(39,168,150,0.2); }
+.floor-tab { flex: 1; padding: 14px 0; border: 2px solid rgba(39,168,150,0.3); border-radius: 14px; background: rgba(255,255,255,0.8); font-size: 20px; font-weight: 700; color: #9CA3AF; cursor: pointer; text-align: center; transition: all 0.2s; font-family: 'Sarabun', sans-serif; }
+.floor-tab.active { border-color: #27A896; background: rgba(39,168,150,0.15); color: #1B5E56; }
+.floor-tab .done-count { display: inline-block; background: #27A896; color: white; border-radius: 20px; font-size: 13px; padding: 2px 8px; margin-left: 5px; }
+.progress-wrap { padding: 12px 16px 0; }
+.progress-label { font-size: 16px; color: #6B7280; margin-bottom: 6px; display: flex; justify-content: space-between; font-weight: 700; }
+.meter-progress-bar { height: 8px; background: #E5E7EB; border-radius: 99px; overflow: hidden; }
+.meter-progress-fill { height: 100%; background: linear-gradient(90deg, #27A896, #1D4ED8); border-radius: 99px; transition: width 0.4s ease; }
+.table-wrap { padding: 8px 12px; }
+table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
+col.col-room  { width: 25%; }
+col.col-meter { width: 25%; }
+th { padding: 6px 4px; font-size: 18px; color: #6B7280; text-align: center; font-weight: 700; }
+.room-row td { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 12px 4px; transition: background 0.3s; }
+.room-row td:first-child { border-radius: 14px 0 0 14px; font-weight: 700; font-size: 24px; color: #1F2937; text-align: center; }
+.room-row td:last-child  { border-radius: 0 14px 14px 0; font-weight: 700; font-size: 24px; color: #1F2937; text-align: center; }
+.room-row.saved td { background: rgba(39,168,150,0.1); }
+.room-row.saved td:first-child, .room-row.saved td:last-child { color: #27A896; }
+.saved-badge { display: none; font-size: 13px; color: #27A896; font-weight: 700; margin-top: 2px; }
+.room-row.saved .saved-badge { display: block; }
+input[type=number] { width: 100%; border: 2px solid rgba(39,168,150,0.3); border-radius: 12px; padding: 10px 2px; font-size: 26px; text-align: center; outline: none; -moz-appearance: textfield; font-family: 'Sarabun', sans-serif; transition: border-color 0.2s; background: rgba(255,255,255,0.9); font-weight: 700; color: #1F2937; }
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type=number]:focus { border-color: #27A896; }
+input[type=number].saved-input { background: rgba(39,168,150,0.1); border-color: rgba(39,168,150,0.4); color: #27A896; pointer-events: none; }
+.result-box { margin: 4px 16px 12px; padding: 16px; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border-radius: 16px; border-left: 5px solid #27A896; display: none; }
+.result-box.show { display: block; }
+.result-title { font-size: 18px; font-weight: 700; color: #1B5E56; margin-bottom: 10px; }
+.result-item { padding: 8px 0; font-size: 16px; color: #374151; border-bottom: 1px solid #F3F4F6; }
+.result-item:last-child { border-bottom: none; }
+.result-item.err { color: #DC2626; }
+.unit-badge { display: inline-block; background: rgba(39,168,150,0.15); color: #1B5E56; border-radius: 20px; font-size: 14px; padding: 2px 10px; margin-left: 4px; font-weight: 700; }
+.btn-wrap { display: none; position: fixed; bottom: 0; left: 0; right: 0; padding: 14px 16px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-top: 1px solid rgba(39,168,150,0.2); z-index: 20; justify-content: center; }
+.btn-save { min-width: 200px; padding: 18px 40px; background: linear-gradient(135deg, #27A896, #1D4ED8); color: white; border: none; border-radius: 16px; font-size: 22px; font-weight: 700; cursor: pointer; font-family: 'Sarabun', sans-serif; transition: all 0.2s; box-shadow: 0 8px 24px rgba(39,168,150,0.4); }
+.btn-save:disabled { background: #E5E7EB; color: #9CA3AF; box-shadow: none; cursor: not-allowed; }
+.btn-save:active:not(:disabled) { transform: scale(0.97); }
+.expense-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 18px; color: #374151; border-bottom: 1px solid rgba(0,0,0,0.05); }
+.expense-row:last-child { border-bottom: none; }
+.expense-row.total { font-weight: 700; font-size: 20px; color: #1F2937; margin-top: 4px; }
+.expense-divider { height: 2px; background: rgba(0,0,0,0.08); margin: 8px 0; border-radius: 99px; }
+.text-green { color: #16A34A; font-weight: 700; }
+.text-red   { color: #DC2626; font-weight: 700; }
+.compare-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.compare-table th { padding: 8px 4px; font-size: 12px; color: #6B7280; font-weight: 700; border-bottom: 2px solid #E5E7EB; text-align: center; }
+.compare-table td { padding: 8px 4px; font-size: 13px; border-bottom: 1px solid #F3F4F6; text-align: right; }
+.compare-table td:first-child { text-align: left; font-weight: 700; color: #374151; }
+.compare-table tr:last-child td { border-bottom: none; font-weight: 700; }
+.text-income  { color: #16A34A; font-weight: 700; }
+.text-expense { color: #DC2626; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚙️ Admin Dashboard</h1>
+  <div class="header-sub" id="admin-name">กำลังโหลด...</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+  <button class="tab"        onclick="switchTab('expense')">💸 Expense</button>
+  <button class="tab"        onclick="switchTab('meter')">📟 มิเตอร์</button>
+  <button class="tab"        onclick="switchTab('yearly')">📅 รายปี</button>
+</div>
+
+<!-- ===== TAB 1: DASHBOARD ===== -->
+<div class="page active" id="page-dashboard">
+  <select class="month-select" id="month-select" onchange="loadDashboard()"></select>
+  <div class="card">
+    <div class="card-title">💰 ยอดรวมทั้งหมด</div>
+    <div class="card-value" id="d-total">-</div>
+  </div>
+  <div class="row-2">
+    <div class="card">
+      <div class="card-title">✅ รับแล้ว</div>
+      <div class="card-value green" id="d-paid">-</div>
+    </div>
+    <div class="card">
+      <div class="card-title">⏳ ค้างชำระ</div>
+      <div class="card-value red" id="d-unpaid">-</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 อัตราการชำระ</div>
+    <div class="card-value blue" id="d-percent">-</div>
+    <div class="progress-bar"><div class="progress-fill" id="d-progress" style="width:0%"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💸 รายจ่ายเดือนนี้</div>
+    <div class="expense-row"><span>ค่าน้ำ</span><span id="d-exp-water">-</span></div>
+    <div class="expense-row"><span>ค่าไฟ</span><span id="d-exp-elec">-</span></div>
+    <div class="expense-row"><span>Internet</span><span id="d-exp-internet">-</span></div>
+    <div class="expense-row"><span>Management Fee</span><span id="d-exp-mgmt">-</span></div>
+    <div class="expense-row"><span>Supplies+Repair</span><span id="d-exp-supplies">-</span></div>
+    <div class="expense-row"><span>Profit Share</span><span id="d-exp-profit">-</span></div>
+    <div class="expense-divider"></div>
+    <div class="expense-row total"><span>รวมรายจ่าย</span><span id="d-exp-total">-</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📈 กำไรสุทธิ</div>
+    <div class="card-value green" id="d-net-profit">-</div>
+  </div>
+  <div class="card">
+    <div class="card-title">🔒 มัดจำเดือนนี้</div>
+    <div class="expense-row"><span>รับ</span><span id="d-dep-in" class="text-green">-</span></div>
+    <div class="expense-row"><span>คืน</span><span id="d-dep-out" class="text-red">-</span></div>
+  </div>
+  <div class="row-3">
+    <div class="card">
+      <div class="card-title">🏠 มีผู้เช่า</div>
+      <div class="card-value" id="d-active">-</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔓 ห้องว่าง</div>
+      <div class="card-value green" id="d-vacant">-</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🚚 ย้ายออก</div>
+      <div class="card-value blue" id="d-moveout">-</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 2: EXPENSE ===== -->
+<div class="page" id="page-expense">
+  <div class="card">
+    <div class="form-group">
+      <label class="form-label">👤 ผู้บันทึก</label>
+      <select class="form-input" id="exp-who">
+        <option value="">-- เลือกชื่อ --</option>
+        <option value="แอดมิน">แอดมิน</option>
+        <option value="หุ้นส่วน">หุ้นส่วน</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">📅 วันที่</label>
+      <input type="date" class="form-input" id="exp-date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">📁 Category</label>
+      <select class="form-input" id="exp-category">
+        <option value="">-- เลือก Category --</option>
+        <option value="Water">Water</option>
+        <option value="Electricity">Electricity</option>
+        <option value="Internet">Internet</option>
+        <option value="Management Fee">Management Fee</option>
+        <option value="Profit Share">Profit Share</option>
+        <option value="Repair">Repair</option>
+        <option value="Supplies">Supplies</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">📝 Item</label>
+      <input type="text" class="form-input" id="exp-item" placeholder="รายละเอียด เช่น ค่าน้ำประปา">
+    </div>
+    <div class="form-group">
+      <label class="form-label">💵 Amount (บาท)</label>
+      <input type="number" class="form-input" id="exp-amount" placeholder="0.00" inputmode="decimal">
+    </div>
+    <div class="form-group">
+      <label class="form-label">📌 Note (ไม่บังคับ)</label>
+      <input type="text" class="form-input" id="exp-note" placeholder="หมายเหตุ">
+    </div>
+    <button class="btn btn-primary" id="btn-expense" onclick="saveExpense()">💾 บันทึก Expense</button>
+  </div>
+</div>
+
+<!-- ===== TAB 3: METER ===== -->
+<div class="page" id="page-meter">
+  <div class="floor-tabs">
+    <button class="floor-tab active" id="tab1" onclick="switchFloor(1)">ชั้น 1</button>
+    <button class="floor-tab"        id="tab2" onclick="switchFloor(2)">ชั้น 2</button>
+    <button class="floor-tab"        id="tab3" onclick="switchFloor(3)">ชั้น 3</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="prog-label">กรอกแล้ว 0 / 10 ห้อง</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="meter-progress-bar"><div class="meter-progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-room"><col class="col-meter">
+        <col class="col-meter"><col class="col-room">
+      </colgroup>
+      <thead>
+        <tr><th></th><th>💧 น้ำ</th><th>⚡ ไฟ</th><th></th></tr>
+      </thead>
+      <tbody id="meter-table"></tbody>
+    </table>
+  </div>
+  <div class="result-box" id="result-box"></div>
+  <div class="btn-wrap">
+    <button class="btn-save" id="btn-save" onclick="saveMeter()">💾 บันทึกชั้นนี้</button>
+  </div>
+</div>
+
+<!-- ===== TAB 4: YEARLY ===== -->
+<div class="page" id="page-yearly">
+  <select class="year-select" id="year-select" onchange="loadYearly()"></select>
+  <div class="card">
+    <div class="card-title">📊 กราฟรายปี</div>
+    <canvas id="year-bar-chart" height="220"></canvas>
+    <div style="margin-top:16px;">
+      <div class="card-title">📈 เปรียบเทียบปีก่อน (กำไร)</div>
+      <canvas id="year-line-chart" height="160"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🗂 ตารางเปรียบเทียบ 2 ปี</div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>เดือน</th>
+          <th id="th-cur-income">รับ (ปีนี้)</th>
+          <th id="th-prev-income">รับ (ปีก่อน)</th>
+          <th id="th-cur-expense">จ่าย (ปีนี้)</th>
+          <th id="th-prev-expense">จ่าย (ปีก่อน)</th>
+          <th id="th-cur-profit">กำไร (ปีนี้)</th>
+          <th id="th-prev-profit">กำไร (ปีก่อน)</th>
+        </tr>
+      </thead>
+      <tbody id="compare-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  CONFIG
+// ============================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx57fi00n2RKu7b5jHu67vzUVwrez1cx6RhW0lvvM9cIkt6_amJzMoVJOJvrwD7imHBnA/exec';
+const LIFF_ID = '2004478373-Knd7GWOk';
+
+// ============================================================
+//  API helper — แทน google.script.run
+// ============================================================
+async function callGAS(action, params = {}) {
+  const res = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action, ...params })
+  });
+  return res.json();
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+async function init() {
+  switchTab('dashboard');
+  initMonthSelect();
+  loadDashboard();
+  initExpenseDate();
+  switchFloor(1);
+  initYearSelect();
+  document.getElementById('admin-name').textContent = 'Admin Dashboard';
+  fetchLiffProfile();
+}
+
+function fetchLiffProfile() {
+  liff.init({ liffId: LIFF_ID, withLoginOnExternalBrowser: true })
+    .then(() => {
+      if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return null; }
+      return liff.getProfile();
+    })
+    .then(profile => {
+      if (!profile) return;
+      document.getElementById('admin-name').textContent = 'สวัสดีค่ะ คุณ' + profile.displayName;
+      const whoSel = document.getElementById('exp-who');
+      if (whoSel) {
+        Array.from(whoSel.options).forEach(opt => {
+          if (opt.value && profile.displayName.includes(opt.value)) whoSel.value = opt.value;
+        });
+      }
+    })
+    .catch(e => {
+      console.warn('LIFF:', e.message);
+      document.getElementById('admin-name').textContent = 'Admin Dashboard';
+    });
+}
+
+// ============================================================
+//  TAB
+// ============================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['dashboard','expense','meter','yearly'][i] === tab);
+  });
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  document.querySelector('.btn-wrap').style.display = tab === 'meter' ? 'flex' : 'none';
+}
+
+// ============================================================
+//  DASHBOARD
+// ============================================================
+function initMonthSelect() {
+  const sel = document.getElementById('month-select');
+  const now = new Date();
+  const th  = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+               'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  for (let i = 0; i < 12; i++) {
+    const d   = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const val = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    const opt = document.createElement('option');
+    opt.value = val;
+    opt.textContent = th[d.getMonth()] + ' ' + (d.getFullYear()+543);
+    if (i === 0) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+async function loadDashboard() {
+  const month = document.getElementById('month-select').value;
+  ['d-total','d-paid','d-unpaid','d-percent','d-active','d-vacant','d-moveout','d-net-profit']
+    .forEach(id => { document.getElementById(id).textContent = '...'; });
+  try {
+    const data = await callGAS('getDashboardData', { monthKey: month });
+    const fmt = n => Number(n).toLocaleString('th-TH') + ' บาท';
+    document.getElementById('d-total').textContent    = fmt(data.total);
+    document.getElementById('d-paid').textContent     = fmt(data.paid);
+    document.getElementById('d-unpaid').textContent   = fmt(data.unpaid);
+    document.getElementById('d-percent').textContent  = data.percent + '%';
+    document.getElementById('d-progress').style.width = data.percent + '%';
+    document.getElementById('d-active').textContent   = data.activeRooms + ' ห้อง';
+    document.getElementById('d-vacant').textContent   = data.vacantRooms + ' ห้อง';
+    const moveoutEl = document.getElementById('d-moveout');
+    moveoutEl.textContent = data.moveOutRooms + ' ห้อง';
+    moveoutEl.className   = data.moveOutRooms > 0 ? 'card-value red' : 'card-value';
+    document.getElementById('d-exp-water').textContent    = fmt(data.expWater);
+    document.getElementById('d-exp-elec').textContent     = fmt(data.expElec);
+    document.getElementById('d-exp-internet').textContent = fmt(data.internet);
+    document.getElementById('d-exp-mgmt').textContent     = fmt(data.mgmt);
+    document.getElementById('d-exp-supplies').textContent = fmt(data.supplies);
+    document.getElementById('d-exp-profit').textContent   = fmt(data.profitShare);
+    document.getElementById('d-exp-total').textContent    = fmt(data.totalExpense);
+    const profitEl = document.getElementById('d-net-profit');
+    profitEl.textContent = fmt(data.netProfit);
+    profitEl.className   = 'card-value ' + (data.netProfit >= 0 ? 'green' : 'red');
+    document.getElementById('d-dep-in').textContent  = fmt(data.depIn);
+    document.getElementById('d-dep-out').textContent = fmt(data.depOut);
+  } catch(err) {
+    showToast('❌ โหลดข้อมูลไม่ได้: ' + err.message, 'error');
+  }
+}
+
+// ============================================================
+//  EXPENSE
+// ============================================================
+function initExpenseDate() {
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = String(today.getMonth()+1).padStart(2,'0');
+  const d = String(today.getDate()).padStart(2,'0');
+  document.getElementById('exp-date').value = y + '-' + m + '-' + d;
+}
+
+async function saveExpense() {
+  const date     = document.getElementById('exp-date').value;
+  const category = document.getElementById('exp-category').value;
+  const item     = document.getElementById('exp-item').value.trim();
+  const amount   = document.getElementById('exp-amount').value;
+  const note     = document.getElementById('exp-note').value.trim();
+  const who      = document.getElementById('exp-who').value;
+
+  if (!who)   { showToast('⚠️ กรุณาเลือกผู้บันทึกค่ะ', 'error'); return; }
+  if (!date || !category || !item || !amount) {
+    showToast('⚠️ กรุณากรอกข้อมูลให้ครบค่ะ', 'error'); return;
+  }
+
+  const month = date.substring(0, 7);
+  const btn   = document.getElementById('btn-expense');
+  btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...';
+
+  try {
+    const result = await callGAS('saveExpenseData', { date, month, category, item, amount, note, who });
+    if (result.success) {
+      showToast('✅ บันทึก Expense เรียบร้อยค่ะ');
+      document.getElementById('exp-item').value   = '';
+      document.getElementById('exp-amount').value = '';
+      document.getElementById('exp-note').value   = '';
+    } else {
+      showToast('❌ ' + result.message, 'error');
+    }
+  } catch(err) {
+    showToast('❌ เกิดข้อผิดพลาด: ' + err.message, 'error');
+  }
+  btn.disabled = false; btn.textContent = '💾 บันทึก Expense';
+}
+
+// ============================================================
+//  METER
+// ============================================================
+const ROOMS = {
+  1: [101,102,103,104,105,106,107,108,109,110],
+  2: [201,202,203,204,205,206,207,208,209,210],
+  3: [301,302,303,304,305,306,307,308,309,310]
+};
+const savedRooms = { 1: new Set(), 2: new Set(), 3: new Set() };
+let currentFloor = 1;
+
+function switchFloor(floor) {
+  currentFloor = floor;
+  [1,2,3].forEach(f => document.getElementById('tab'+f).classList.toggle('active', f===floor));
+  renderTable(floor);
+  updateProgress(floor);
+  document.getElementById('result-box').classList.remove('show');
+}
+
+function renderTable(floor) {
+  const tbody = document.getElementById('meter-table');
+  tbody.innerHTML = '';
+  ROOMS[floor].forEach(room => {
+    const isSaved = savedRooms[floor].has(room);
+    const tr = document.createElement('tr');
+    tr.className = 'room-row' + (isSaved ? ' saved' : '');
+    tr.id = 'row_' + room;
+    tr.innerHTML = `
+      <td>${isSaved?'✅':''}${room}<div class="saved-badge">✓</div></td>
+      <td><input type="number" id="w_${room}" class="${isSaved?'saved-input':''}" placeholder="${isSaved?'✓':''}" inputmode="numeric" ${isSaved?'disabled':''}></td>
+      <td><input type="number" id="e_${room}" class="${isSaved?'saved-input':''}" placeholder="${isSaved?'✓':''}" inputmode="numeric" ${isSaved?'disabled':''}></td>
+      <td>${isSaved?'✅':''}${room}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function updateProgress(floor) {
+  const total = ROOMS[floor].length;
+  const done  = savedRooms[floor].size;
+  const pct   = Math.round(done/total*100);
+  document.getElementById('prog-label').textContent = `กรอกแล้ว ${done} / ${total} ห้อง`;
+  document.getElementById('prog-pct').textContent   = pct + '%';
+  document.getElementById('prog-fill').style.width  = pct + '%';
+  [1,2,3].forEach(f => {
+    const cnt = savedRooms[f].size;
+    const tab = document.getElementById('tab'+f);
+    tab.innerHTML = `ชั้น ${f}` + (cnt>0 ? ` <span class="done-count">${cnt}</span>` : '');
+  });
+}
+
+async function saveMeter() {
+  const btn = document.getElementById('btn-save');
+  const meters = [];
+  ROOMS[currentFloor].forEach(room => {
+    if (savedRooms[currentFloor].has(room)) return;
+    const w = document.getElementById('w_'+room)?.value;
+    const e = document.getElementById('e_'+room)?.value;
+    if (w||e) meters.push({ room: String(room), water: w||"0", electric: e||"0" });
+  });
+  if (meters.length===0) { showToast('⚠️ ไม่มีข้อมูลใหม่ที่ต้องบันทึกค่ะ','error'); return; }
+  btn.disabled=true; btn.textContent='⏳ กำลังบันทึก...';
+  try {
+    const result = await callGAS('saveMeterData', { floor: currentFloor, meters });
+    result.saved.forEach(s => {
+      savedRooms[currentFloor].add(Number(s.room));
+      const row = document.getElementById('row_'+s.room);
+      if (row) {
+        row.classList.add('saved');
+        row.cells[0].innerHTML=`✅${s.room}<div class="saved-badge">✓</div>`;
+        row.cells[3].innerHTML=`✅${s.room}`;
+        const wInput=document.getElementById('w_'+s.room);
+        const eInput=document.getElementById('e_'+s.room);
+        if(wInput){wInput.classList.add('saved-input');wInput.disabled=true;wInput.placeholder='✓';wInput.value='';}
+        if(eInput){eInput.classList.add('saved-input');eInput.disabled=true;eInput.placeholder='✓';eInput.value='';}
+      }
+    });
+    updateProgress(currentFloor);
+    const box=document.getElementById('result-box');
+    box.classList.add('show');
+    let html=`<div class="result-title">✅ บันทึกแล้ว ${result.saved.length} ห้อง</div>`;
+    result.saved.forEach(s=>{
+      html+=`<div class="result-item">🏠 ห้อง ${s.room} 💧 ${s.waterOld}→${s.waterNew} <span class="unit-badge">+${s.wUnit}</span> ⚡ ${s.elecOld}→${s.elecNew} <span class="unit-badge">+${s.eUnit}</span></div>`;
+    });
+    result.errors.forEach(err=>{html+=`<div class="result-item err">❌ ${err}</div>`;});
+    box.innerHTML=html;
+    showToast(`✅ บันทึก ${result.saved.length} ห้องเรียบร้อยค่ะ`);
+  } catch(err) {
+    showToast('❌ เกิดข้อผิดพลาด: '+(err.message||err),'error',4000);
+  }
+  btn.disabled=false; btn.textContent='💾 บันทึกชั้นนี้';
+}
+
+// ============================================================
+//  YEARLY
+// ============================================================
+const MONTH_LABELS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.',
+                      'ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+let barChart  = null;
+let lineChart = null;
+
+function initYearSelect() {
+  const sel = document.getElementById('year-select');
+  const now = new Date().getFullYear();
+  for (let i = 0; i < 3; i++) {
+    const y   = now - i;
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = 'พ.ศ. ' + (y + 543) + '  (ค.ศ. ' + y + ')';
+    if (i === 0) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+async function loadYearly() {
+  const year = document.getElementById('year-select').value;
+  try {
+    const data = await callGAS('getYearCompareData', { year: Number(year) });
+    renderYearCharts(data, year);
+    renderCompareTable(data, year);
+  } catch(err) {
+    showToast('❌ โหลดข้อมูลไม่ได้: ' + err.message, 'error');
+  }
+}
+
+function renderYearCharts(data, year) {
+  const thYear     = Number(year) + 543;
+  const thYearPrev = Number(year) - 1 + 543;
+  const cur  = data.current;
+  const prev = data.prev;
+
+  function toArray(monthlyData, key) {
+    const map = {};
+    if (monthlyData) monthlyData.forEach(m => { map[m.month] = m[key] || 0; });
+    return MONTH_LABELS.map(l => map[l] || 0);
+  }
+
+  const curIncome  = toArray(cur?.monthlyData,  'income');
+  const curExpense = toArray(cur?.monthlyData,  'expense');
+  const curProfit  = toArray(cur?.monthlyData,  'profit');
+  const prevProfit = toArray(prev?.monthlyData, 'profit');
+
+  const barCtx = document.getElementById('year-bar-chart').getContext('2d');
+  if (barChart) barChart.destroy();
+  barChart = new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: MONTH_LABELS,
+      datasets: [
+        { label: 'รายรับ',  data: curIncome,  backgroundColor: 'rgba(22,163,74,0.7)',  borderRadius: 4 },
+        { label: 'รายจ่าย', data: curExpense, backgroundColor: 'rgba(220,38,38,0.7)',  borderRadius: 4 },
+        { label: 'กำไร',    data: curProfit,  backgroundColor: 'rgba(29,78,216,0.7)',  borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: 'Sarabun', size: 13 } } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + Number(ctx.raw).toLocaleString('th-TH') + ' บาท' } }
+      },
+      scales: {
+        x: { ticks: { font: { family: 'Sarabun', size: 12 } } },
+        y: { ticks: { font: { family: 'Sarabun', size: 11 }, callback: v => Number(v).toLocaleString('th-TH') } }
+      }
+    }
+  });
+
+  const lineCtx = document.getElementById('year-line-chart').getContext('2d');
+  if (lineChart) lineChart.destroy();
+  lineChart = new Chart(lineCtx, {
+    type: 'line',
+    data: {
+      labels: MONTH_LABELS,
+      datasets: [
+        { label: 'กำไร พ.ศ. ' + thYear,     data: curProfit,  borderColor: '#1D4ED8', backgroundColor: 'rgba(29,78,216,0.1)',   borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
+        { label: 'กำไร พ.ศ. ' + thYearPrev, data: prevProfit, borderColor: '#9CA3AF', backgroundColor: 'rgba(156,163,175,0.1)', borderWidth: 2, pointRadius: 4, tension: 0.3, borderDash: [5,5], fill: false }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: 'Sarabun', size: 13 } } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + Number(ctx.raw).toLocaleString('th-TH') + ' บาท' } }
+      },
+      scales: {
+        x: { ticks: { font: { family: 'Sarabun', size: 12 } } },
+        y: { ticks: { font: { family: 'Sarabun', size: 11 }, callback: v => Number(v).toLocaleString('th-TH') } }
+      }
+    }
+  });
+}
+
+function renderCompareTable(data, year) {
+  const thYear     = Number(year) + 543;
+  const thYearPrev = Number(year) - 1 + 543;
+  const cur  = data.current;
+  const prev = data.prev;
+
+  document.getElementById('th-cur-income').textContent   = 'รับ '   + thYear;
+  document.getElementById('th-prev-income').textContent  = 'รับ '   + thYearPrev;
+  document.getElementById('th-cur-expense').textContent  = 'จ่าย '  + thYear;
+  document.getElementById('th-prev-expense').textContent = 'จ่าย '  + thYearPrev;
+  document.getElementById('th-cur-profit').textContent   = 'กำไร '  + thYear;
+  document.getElementById('th-prev-profit').textContent  = 'กำไร '  + thYearPrev;
+
+  function toMap(monthlyData, key) {
+    const map = {};
+    if (monthlyData) monthlyData.forEach(m => { map[m.month] = m[key] || 0; });
+    return map;
+  }
+
+  const curIncome   = toMap(cur?.monthlyData,  'income');
+  const curExpense  = toMap(cur?.monthlyData,  'expense');
+  const curProfit   = toMap(cur?.monthlyData,  'profit');
+  const prevIncome  = toMap(prev?.monthlyData, 'income');
+  const prevExpense = toMap(prev?.monthlyData, 'expense');
+  const prevProfit  = toMap(prev?.monthlyData, 'profit');
+
+  const fmt = n => n ? Number(n).toLocaleString('th-TH') : '-';
+  const pc  = n => n > 0 ? '#16A34A' : n < 0 ? '#DC2626' : '#6B7280';
+
+  const tbody = document.getElementById('compare-tbody');
+  tbody.innerHTML = '';
+
+  const allMonths    = new Set([...Object.keys(curIncome), ...Object.keys(prevIncome)]);
+  const sortedMonths = MONTH_LABELS.filter(m => allMonths.has(m));
+
+  let totCI=0,totPI=0,totCE=0,totPE=0,totCP=0,totPP=0;
+  sortedMonths.forEach(m => {
+    const ci=curIncome[m]||0, pi=prevIncome[m]||0;
+    const ce=curExpense[m]||0, pe=prevExpense[m]||0;
+    const cp=curProfit[m]||0, pp=prevProfit[m]||0;
+    totCI+=ci; totPI+=pi; totCE+=ce; totPE+=pe; totCP+=cp; totPP+=pp;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${m}</td>
+      <td class="text-income">${fmt(ci)}</td>
+      <td style="color:#6B7280">${fmt(pi)}</td>
+      <td class="text-expense">${fmt(ce)}</td>
+      <td style="color:#9CA3AF">${fmt(pe)}</td>
+      <td style="color:${pc(cp)}">${fmt(cp)}</td>
+      <td style="color:${pc(pp)}">${fmt(pp)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  const tfr = document.createElement('tr');
+  tfr.style.background = '#F9FAFB';
+  tfr.innerHTML = `
+    <td>รวม</td>
+    <td class="text-income">${fmt(totCI)}</td>
+    <td style="color:#6B7280">${fmt(totPI)}</td>
+    <td class="text-expense">${fmt(totCE)}</td>
+    <td style="color:#9CA3AF">${fmt(totPE)}</td>
+    <td style="color:${pc(totCP)}">${fmt(totCP)}</td>
+    <td style="color:${pc(totPP)}">${fmt(totPP)}</td>
+  `;
+  tbody.appendChild(tfr);
+}
+
+// ============================================================
+//  UTILS
+// ============================================================
+function showToast(msg, type='success', duration=3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type;
+  setTimeout(() => t.className = 'toast', duration);
+}
+
+init();
+</script>
+</body>
+</html>
