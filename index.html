@@ -324,6 +324,7 @@ function renderTable(floor) {
     const hasNew = d.waterNew > 0 || d.elecNew > 0;
     const tr = document.createElement('tr');
     tr.className = 'room-row' + (isSaved ? ' saved' : '');
+    if (hasNew) tr.classList.add('has-filled');
     tr.id = 'row_' + room;
     if (isSaved) {
       tr.innerHTML = `<td>${room}<div class="saved-badge">✓</div></td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" class="saved-input" placeholder="✓" disabled></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" class="saved-input" placeholder="✓" disabled></td><td>${room}<div class="saved-badge">✓</div></td>`;
