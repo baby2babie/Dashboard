@@ -11,9 +11,6 @@
 <style>
   html, body { background: #E8EDF2 !important; }
 </style>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
 </head>
 <body>
 
@@ -71,7 +68,7 @@
   <div class="card">
     <div class="form-group">
       <label class="form-label">📅 วันที่</label>
-      <input type="text" class="form-input" id="exp-date" readonly>
+      <input type="date" class="form-input" id="exp-date">
     </div>
     <div class="form-group">
       <label class="form-label">📁 Category</label>
@@ -276,27 +273,11 @@ async function loadDashboard() {
 //  EXPENSE
 // ============================================================
 function initExpenseDate() {
-  const today = new Date();
-  const y = today.getFullYear();
-  const m = String(today.getMonth()+1).padStart(2,'0');
-  const d = String(today.getDate()).padStart(2,'0');
-
-  flatpickr('#exp-date', {
-    locale: 'th',
-    dateFormat: 'd M Y',
-    defaultDate: today,
-    onChange: function(selectedDates, dateStr, instance) {
-      const d = selectedDates[0];
-      const y2 = d.getFullYear();
-      const m2 = String(d.getMonth()+1).padStart(2,'0');
-      const d2 = String(d.getDate()).padStart(2,'0');
-      document.getElementById('exp-date').dataset.value = `${y2}-${m2}-${d2}`;
-    }
-  });
-  document.getElementById('exp-date').dataset.value = `${y}-${m}-${d}`;
+  const t = new Date();
+  document.getElementById('exp-date').value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
 }
 async function saveExpense() {
-  const date = document.getElementById('exp-date').dataset.value;
+  const date=document.getElementById('exp-date').value, category=document.getElementById('exp-category').value;
   const item=document.getElementById('exp-item').value.trim(), amount=document.getElementById('exp-amount').value;
   const note=document.getElementById('exp-note').value.trim();
   const who=document.getElementById('admin-name').textContent.replace('สวัสดีค่ะ คุณ','').trim();
