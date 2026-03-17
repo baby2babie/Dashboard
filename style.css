@@ -116,9 +116,13 @@ select.form-input {
   background-color: var(--bg); padding-right: 44px;
 }
 input[type=date].form-input {
-  width: auto; padding: 12px 22px; font-size: 16px;
-  border-radius: 99px; box-shadow: var(--neu-out);
-  color: var(--teal-d); font-weight: 700;
+  width: 100%;
+  padding: 16px 18px;
+  font-size: 18px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--neu-in);
+  color: var(--teal-d);
+  font-weight: 700;
 }
 
 /* ===== BUTTON ===== */
@@ -151,9 +155,9 @@ input[type=date].form-input {
 .meter-progress-bar { height: 8px; background: var(--bg); border-radius: 99px; overflow: hidden; box-shadow: var(--neu-in); }
 .meter-progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--blue)); border-radius: 99px; transition: width 0.4s ease; }
 .table-wrap { padding: 10px 14px; overflow-x: auto; }
-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; table-layout: fixed; }
+table { width: 100%; border-collapse: separate; border-spacing: 0 14px; table-layout: fixed; }
 th { padding: 6px 4px; font-size: 12px; color: var(--text-3); text-align: center; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-.room-row td { background: var(--bg); padding: 12px 4px; text-align: center; vertical-align: middle; transition: background 0.3s; }
+.room-row td { background: var(--bg); padding: 16px 4px; text-align: center; vertical-align: middle; transition: background 0.3s; }
 .room-row td:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); font-weight: 700; font-size: 18px; color: var(--text-1); box-shadow: -6px 0 12px var(--shadow-l), 0 6px 12px var(--shadow-d); }
 .room-row td:last-child  { border-radius: 0 var(--radius-md) var(--radius-md) 0; font-weight: 700; font-size: 18px; color: var(--text-1); box-shadow: 6px 0 12px var(--shadow-l), 0 6px 12px var(--shadow-d); }
 .room-row td:not(:first-child):not(:last-child) { box-shadow: 0 6px 12px var(--shadow-d), 0 -6px 12px var(--shadow-l); }
