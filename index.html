@@ -217,16 +217,6 @@ input[type=number].saved-input { background: rgba(39,168,150,0.1); border-color:
 </div>
 
 <!-- ===== TAB 2: EXPENSE ===== -->
-<div class="page" id="page-expense">
-  <div class="card">
-    <div class="form-group">
-      <label class="form-label">👤 ผู้บันทึก</label>
-      <select class="form-input" id="exp-who">
-        <option value="">-- เลือกชื่อ --</option>
-        <option value="แอดมิน">แอดมิน</option>
-        <option value="หุ้นส่วน">หุ้นส่วน</option>
-      </select>
-    </div>
     <div class="form-group">
       <label class="form-label">📅 วันที่</label>
       <input type="date" class="form-input" id="exp-date">
@@ -463,9 +453,8 @@ async function saveExpense() {
   const item     = document.getElementById('exp-item').value.trim();
   const amount   = document.getElementById('exp-amount').value;
   const note     = document.getElementById('exp-note').value.trim();
-  const who      = document.getElementById('exp-who').value;
-
-  if (!who)   { showToast('⚠️ กรุณาเลือกผู้บันทึกค่ะ', 'error'); return; }
+  const nameEl = document.getElementById('admin-name').textContent;
+  const who    = nameEl.replace('สวัสดีค่ะ คุณ', '').trim();
   if (!date || !category || !item || !amount) {
     showToast('⚠️ กรุณากรอกข้อมูลให้ครบค่ะ', 'error'); return;
   }
