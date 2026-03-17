@@ -274,15 +274,23 @@ async function loadDashboard() {
 // ============================================================
 function initExpenseDate() {
   const today = new Date();
-  const th = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
-              'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  // เก็บค่า yyyy-mm-dd ไว้ใน data attribute
   const y = today.getFullYear();
   const m = String(today.getMonth()+1).padStart(2,'0');
   const d = String(today.getDate()).padStart(2,'0');
-  const el = document.getElementById('exp-date');
-  el.dataset.value = `${y}-${m}-${d}`;
-  el.value = `${today.getDate()} ${th[today.getMonth()]} ${y+543}`;
+
+  flatpickr('#exp-date', {
+    locale: 'th',
+    dateFormat: 'd M Y',
+    defaultDate: today,
+    onChange: function(selectedDates, dateStr, instance) {
+      const d = selectedDates[0];
+      const y2 = d.getFullYear();
+      const m2 = String(d.getMonth()+1).padStart(2,'0');
+      const d2 = String(d.getDate()).padStart(2,'0');
+      document.getElementById('exp-date').dataset.value = `${y2}-${m2}-${d2}`;
+    }
+  });
+  document.getElementById('exp-date').dataset.value = `${y}-${m}-${d}`;
 }
 async function saveExpense() {
   const date = document.getElementById('exp-date').dataset.value;
