@@ -68,7 +68,7 @@
   <div class="card">
     <div class="form-group">
       <label class="form-label">📅 วันที่</label>
-      <input type="date" class="form-input" id="exp-date">
+      <input type="text" class="form-input" id="exp-date" readonly>
     </div>
     <div class="form-group">
       <label class="form-label">📁 Category</label>
@@ -273,11 +273,19 @@ async function loadDashboard() {
 //  EXPENSE
 // ============================================================
 function initExpenseDate() {
-  const t = new Date();
-  document.getElementById('exp-date').value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  const today = new Date();
+  const th = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+              'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  // เก็บค่า yyyy-mm-dd ไว้ใน data attribute
+  const y = today.getFullYear();
+  const m = String(today.getMonth()+1).padStart(2,'0');
+  const d = String(today.getDate()).padStart(2,'0');
+  const el = document.getElementById('exp-date');
+  el.dataset.value = `${y}-${m}-${d}`;
+  el.value = `${today.getDate()} ${th[today.getMonth()]} ${y+543}`;
 }
 async function saveExpense() {
-  const date=document.getElementById('exp-date').value, category=document.getElementById('exp-category').value;
+  const date = document.getElementById('exp-date').dataset.value;
   const item=document.getElementById('exp-item').value.trim(), amount=document.getElementById('exp-amount').value;
   const note=document.getElementById('exp-note').value.trim();
   const who=document.getElementById('admin-name').textContent.replace('สวัสดีค่ะ คุณ','').trim();
