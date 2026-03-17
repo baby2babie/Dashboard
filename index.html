@@ -148,7 +148,11 @@ input[type=number].error-input { border-color: #DC2626 !important; background: r
 <!-- ===== TAB 2: EXPENSE ===== -->
 <div class="page" id="page-expense">
   <div class="card">
-    <div class="form-group"><label class="form-label">📅 วันที่</label><input type="date" class="form-input" id="exp-date"></div>
+    <div class="form-group">
+  <label class="form-label">📅 วันที่</label>
+  <input type="date" class="form-input" id="exp-date" 
+    style="width: auto; padding: 12px 20px; font-size: 17px; border-radius: 99px; border: 2px solid rgba(39,168,150,0.4); background: linear-gradient(135deg, rgba(39,168,150,0.08), rgba(29,78,216,0.08)); color: #1B5E56; font-weight: 700;">
+</div>
     <div class="form-group">
       <label class="form-label">📁 Category</label>
       <select class="form-input" id="exp-category">
