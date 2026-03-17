@@ -328,7 +328,7 @@ function renderTable(floor) {
     if (isSaved) {
       tr.innerHTML = `<td>${room}<div class="saved-badge">✓</div></td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" class="saved-input" placeholder="✓" disabled></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" class="saved-input" placeholder="✓" disabled></td><td>${room}<div class="saved-badge">✓</div></td>`;
     } else {
-      tr.innerHTML = `<td>${room}${hasNew?'<div class="has-val-badge">มีค่า</div>':''}</td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" placeholder="ใหม่" inputmode="numeric" oninput="validateMeter(this,${d.waterOld})"></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" placeholder="ใหม่" inputmode="numeric" oninput="validateMeter(this,${d.elecOld})"></td><td>${room}${hasNew?'<div class="has-val-badge">มีค่า</div>':''}</td>`;
+      tr.innerHTML = `<td>${room}${hasNew?'<div class="has-val-badge">✅กรอกแล้ว</div>':''}</td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" placeholder="ใหม่" inputmode="numeric" oninput="validateMeter(this,${d.waterOld})"></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" placeholder="ใหม่" inputmode="numeric" oninput="validateMeter(this,${d.elecOld})"></td><td>${room}${hasNew?'<div class="has-val-badge">มีค่า</div>':''}</td>`;
     }
     tbody.appendChild(tr);
   });
