@@ -23,10 +23,6 @@
   <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
   <button class="tab"        onclick="switchTab('expense')">💸 Expense</button>
   <button class="tab"        onclick="switchTab('meter')">📟 มิเตอร์</button>
-  if (tab === 'meter') {
-    loadMeterData();
-    document.querySelector('.btn-wrap').style.display = userRole === 'PARTNER' ? 'none' : 'flex';
-  }
   <button class="tab"        onclick="switchTab('yearly')">📅 รายปี</button>
 </div>
 
@@ -223,12 +219,19 @@ function fetchLiffProfile() {
     .catch(() => { document.getElementById('admin-name').textContent = 'Admin Dashboard'; });
 }
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['dashboard','expense','meter','yearly'][i] === tab));
+  document.querySelectorAll('.tab').forEach((t,i) => 
+    t.classList.toggle('active', ['dashboard','expense','meter','yearly'][i] === tab));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + tab).classList.add('active');
-  document.querySelector('.btn-wrap').style.display = tab === 'meter' ? 'flex' : 'none';
+
+  if (tab === 'meter') {
+    loadMeterData();
+    document.querySelector('.btn-wrap').style.display = userRole === 'PARTNER' ? 'none' : 'flex';
+  } else {
+    document.querySelector('.btn-wrap').style.display = 'none';
+  }
+
   if (tab === 'yearly') loadYearly();
-  if (tab === 'meter')  loadMeterData();
 }
 async function init() {
   switchTab('dashboard');
