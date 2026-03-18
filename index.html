@@ -23,6 +23,10 @@
   <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
   <button class="tab"        onclick="switchTab('expense')">💸 Expense</button>
   <button class="tab"        onclick="switchTab('meter')">📟 มิเตอร์</button>
+  if (tab === 'meter') {
+    loadMeterData();
+    document.querySelector('.btn-wrap').style.display = userRole === 'PARTNER' ? 'none' : 'flex';
+  }
   <button class="tab"        onclick="switchTab('yearly')">📅 รายปี</button>
 </div>
 
@@ -200,8 +204,21 @@ function formatThaiMonth(k) {
 // ============================================================
 function fetchLiffProfile() {
   liff.init({ liffId: LIFF_ID, withLoginOnExternalBrowser: true })
-    .then(() => { if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return null; } return liff.getProfile(); })
-    .then(profile => { if (!profile) return; document.getElementById('admin-name').textContent = 'สวัสดีค่ะ คุณ' + profile.displayName; })
+    .then(() => {
+      if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return null; }
+      return liff.getProfile();
+    })
+    .then(async profile => {
+      if (!profile) return;
+      document.getElementById('admin-name').textContent = 'สวัสดีค่ะ คุณ' + profile.displayName;
+      // ดึง role จาก GAS
+      const result = await callGAS('getUserRole', { userId: profile.userId });
+      userRole = result.role || 'VISITOR';
+      // ถ้าเป็น PARTNER — แสดง badge
+      if (userRole === 'PARTNER') {
+        document.getElementById('admin-name').textContent += ' (Partner)';
+      }
+    })
     .catch(() => { document.getElementById('admin-name').textContent = 'Admin Dashboard'; });
 }
 function switchTab(tab) {
@@ -332,7 +349,16 @@ function renderTable(floor) {
     if (isSaved) {
       tr.innerHTML = `<td>${room}<div class="saved-badge">✓</div></td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" class="saved-input" placeholder="✓" disabled></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" class="saved-input" placeholder="✓" disabled></td><td>${room}<div class="saved-badge">✓</div></td>`;
     } else {
-      tr.innerHTML = `<td>${room}${hasNew?'<div class="has-val-badge">✅กรอกแล้ว</div>':''}</td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" placeholder="ใหม่" inputmode="numeric" oninput="validateMeter(this,${d.waterOld})"></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" placeholder="ใหม่" inputmode="numeric" oninput="validateMeter(this,${d.elecOld})"></td><td>${room}${hasNew?'<div class="has-val-badge">✅กรอกแล้ว</div>':''}</td>`;
+      const isPartnerUser = userRole === 'PARTNER';
+tr.innerHTML = `
+  <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>
+  <td class="old-val">${d.waterOld}</td>
+  <td><input type="number" id="w_${room}" placeholder="${isPartnerUser?'ดูอย่างเดียว':'ใหม่'}" inputmode="numeric"
+    ${isPartnerUser ? 'disabled style="opacity:0.5"' : `oninput="validateMeter(this,${d.waterOld})"`}></td>
+  <td class="old-val">${d.elecOld}</td>
+  <td><input type="number" id="e_${room}" placeholder="${isPartnerUser?'ดูอย่างเดียว':'ใหม่'}" inputmode="numeric"
+    ${isPartnerUser ? 'disabled style="opacity:0.5"' : `oninput="validateMeter(this,${d.elecOld})"`}></td>
+  <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>`;
     }
     tbody.appendChild(tr);
   });
