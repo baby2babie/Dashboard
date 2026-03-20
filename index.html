@@ -48,6 +48,7 @@
     <div class="card-title">💸 รายจ่ายเดือนนี้</div>
     <div class="expense-row"><span>ค่าน้ำ</span><span id="d-exp-water">-</span></div>
     <div class="expense-row"><span>ค่าไฟ</span><span id="d-exp-elec">-</span></div>
+    <div class="expense-row"><span>ค่าบริการไฟ</span><span id="d-exp-elec-service">-</span></div>
     <div class="expense-row"><span>Internet</span><span id="d-exp-internet">-</span></div>
     <div class="expense-row"><span>Management Fee</span><span id="d-exp-mgmt">-</span></div>
     <div class="expense-row"><span>Supplies+Repair</span><span id="d-exp-supplies">-</span></div>
@@ -78,16 +79,17 @@
     <div class="form-group">
       <label class="form-label">📁 Category</label>
       <select class="form-input" id="exp-category">
-        <option value="">-- เลือก Category --</option>
-        <option value="Water">Water</option>
-        <option value="Electricity">Electricity</option>
-        <option value="Internet">Internet</option>
-        <option value="Management Fee">Management Fee</option>
-        <option value="Profit Share">Profit Share</option>
-        <option value="Repair">Repair</option>
-        <option value="Supplies">Supplies</option>
-        <option value="Other">Other</option>
-      </select>
+  <option value="">-- เลือก Category --</option>
+  <option value="Water">Water — ค่าน้ำ</option>
+  <option value="Electricity">Electricity — ค่าไฟ</option>
+  <option value="Electricity Service">Electricity Service — ค่าบริการไฟ</option>
+  <option value="Internet">Internet</option>
+  <option value="Management Fee">Management Fee</option>
+  <option value="Profit Share">Profit Share</option>
+  <option value="Repair">Repair</option>
+  <option value="Supplies">Supplies</option>
+  <option value="Other">Other</option>
+</select>
     </div>
     <div class="form-group">
       <label class="form-label">📝 Item</label>
@@ -282,6 +284,7 @@ async function loadDashboard() {
     mel.className   = data.moveOutRooms > 0 ? 'card-value red' : 'card-value';
     document.getElementById('d-exp-water').textContent    = fmt(data.expWater);
     document.getElementById('d-exp-elec').textContent     = fmt(data.expElec);
+    document.getElementById('d-exp-elec-service').textContent = fmt(data.elecService);
     document.getElementById('d-exp-internet').textContent = fmt(data.internet);
     document.getElementById('d-exp-mgmt').textContent     = fmt(data.mgmt);
     document.getElementById('d-exp-supplies').textContent = fmt(data.supplies);
