@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard</title>
-<script src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css"><meta name="theme-color" content="#E8EDF2">
+<link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#E8EDF2">
 <style>
   html, body { background: #E8EDF2 !important; }
 </style>
@@ -27,7 +28,8 @@
 <div class="tab-bar">
   <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
   <button class="tab"        onclick="switchTab('expense')">💸 Expense</button>
-  <button class="tab"        onclick="switchTab('meter')">📟 มิเตอร์</button>
+  <button class="tab"        onclick="switchTab('usage')">💧 การใช้</button>
+  <button class="tab"        onclick="switchTab('meter')">📟 กรอก</button>
   <button class="tab"        onclick="switchTab('yearly')">📅 รายปี</button>
 </div>
 
@@ -78,16 +80,16 @@
     <div class="form-group">
       <label class="form-label">📁 Category</label>
       <select class="form-input" id="exp-category">
-  <option value="">-- เลือก Category --</option>
-  <option value="Water">Water — ค่าน้ำ</option>
-  <option value="Electricity">Electricity — ค่าไฟ</option>
-  <option value="Internet">Internet</option>
-  <option value="Management Fee">Management Fee</option>
-  <option value="Profit Share">Profit Share</option>
-  <option value="Repair">Repair</option>
-  <option value="Supplies">Supplies</option>
-  <option value="Other">Other</option>
-</select>
+        <option value="">-- เลือก Category --</option>
+        <option value="Water">Water — ค่าน้ำ</option>
+        <option value="Electricity">Electricity — ค่าไฟ</option>
+        <option value="Internet">Internet</option>
+        <option value="Management Fee">Management Fee</option>
+        <option value="Profit Share">Profit Share</option>
+        <option value="Repair">Repair</option>
+        <option value="Supplies">Supplies</option>
+        <option value="Other">Other</option>
+      </select>
     </div>
     <div class="form-group">
       <label class="form-label">📝 Item</label>
@@ -105,7 +107,29 @@
   </div>
 </div>
 
-<!-- ===== TAB 3: METER ===== -->
+<!-- ===== TAB 3: USAGE ===== -->
+<div class="page" id="page-usage">
+  <div class="usage-header">
+    <select class="month-select" id="usage-month-select" onchange="renderUsage()" style="margin-bottom:0"></select>
+    <div class="usage-toggle">
+      <button class="utab active" id="utab-water" onclick="switchUsageTab('water')">💧 น้ำ</button>
+      <button class="utab"        id="utab-elec"  onclick="switchUsageTab('elec')">⚡ ไฟ</button>
+    </div>
+  </div>
+
+  <div class="card" id="usage-alert-card" style="display:none">
+    <div class="card-title">⚠️ ห้องที่ควรตรวจสอบ</div>
+    <div id="usage-alerts"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" id="usage-chart-title">💧 การใช้น้ำรายห้อง (หน่วย)</div>
+    <div id="usage-avg-label" style="font-size:13px;color:#9CA3AF;margin-bottom:10px;text-align:right"></div>
+    <div id="usage-bars"></div>
+  </div>
+</div>
+
+<!-- ===== TAB 4: METER ===== -->
 <div class="page" id="page-meter">
   <div class="meter-month-bar">📅 บันทึกมิเตอร์เดือน: <span id="meter-month">...</span></div>
   <div class="floor-tabs">
@@ -145,7 +169,7 @@
   </div>
 </div>
 
-<!-- ===== TAB 4: YEARLY ===== -->
+<!-- ===== TAB 5: YEARLY ===== -->
 <div class="page" id="page-yearly">
   <select class="year-select" id="year-select" onchange="loadYearly()"></select>
   <div class="card">
@@ -213,19 +237,19 @@ function fetchLiffProfile() {
     .then(async profile => {
       if (!profile) return;
       document.getElementById('admin-name').textContent = 'สวัสดีค่ะ คุณ' + profile.displayName;
-      // ดึง role จาก GAS
       const result = await callGAS('getUserRole', { userId: profile.userId });
       userRole = result.role || 'VISITOR';
-      // ถ้าเป็น PARTNER — แสดง badge
       if (userRole === 'PARTNER') {
         document.getElementById('admin-name').textContent += ' (Partner)';
       }
     })
     .catch(() => { document.getElementById('admin-name').textContent = 'Admin Dashboard'; });
 }
+
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => 
-    t.classList.toggle('active', ['dashboard','expense','meter','yearly'][i] === tab));
+  const tabs = ['dashboard','expense','usage','meter','yearly'];
+  document.querySelectorAll('.tab').forEach((t,i) =>
+    t.classList.toggle('active', tabs[i] === tab));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + tab).classList.add('active');
 
@@ -236,12 +260,15 @@ function switchTab(tab) {
     document.querySelector('.btn-wrap').style.display = 'none';
   }
 
+  if (tab === 'usage')  loadUsage();
   if (tab === 'yearly') loadYearly();
 }
+
 async function init() {
   switchTab('dashboard');
   initMonthSelect(); loadDashboard();
   initExpenseDate();
+  initUsageMonthSelect();
   switchFloor(1);
   initYearSelect();
   document.getElementById('admin-name').textContent = 'Admin Dashboard';
@@ -321,6 +348,109 @@ async function saveExpense() {
 }
 
 // ============================================================
+//  USAGE — การใช้น้ำ/ไฟรายห้อง
+// ============================================================
+let usageData = {}, currentUsageTab = 'water';
+
+function initUsageMonthSelect() {
+  const sel = document.getElementById('usage-month-select');
+  const th  = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const now = new Date();
+  for (let i = 0; i < 6; i++) {
+    const d   = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const val = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    const opt = document.createElement('option');
+    opt.value = val;
+    opt.textContent = th[d.getMonth()] + ' ' + (d.getFullYear()+543);
+    if (i === 0) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+async function loadUsage() {
+  document.getElementById('usage-bars').innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:20px">⏳ กำลังโหลด...</div>';
+  document.getElementById('usage-alert-card').style.display = 'none';
+  try {
+    const result = await callGAS('getUsageData', { months: 6 });
+    if (!result.success) return;
+    usageData = result.data;
+    renderUsage();
+  } catch(e) {
+    document.getElementById('usage-bars').innerHTML = '<div style="text-align:center;color:#DC2626;padding:20px">❌ โหลดไม่ได้</div>';
+  }
+}
+
+function switchUsageTab(tab) {
+  currentUsageTab = tab;
+  document.getElementById('utab-water').classList.toggle('active', tab === 'water');
+  document.getElementById('utab-elec').classList.toggle('active',  tab === 'elec');
+  renderUsage();
+}
+
+function renderUsage() {
+  const monthKey = document.getElementById('usage-month-select').value;
+  const rows     = usageData[monthKey] || [];
+  const isWater  = currentUsageTab === 'water';
+
+  document.getElementById('usage-chart-title').textContent =
+    isWater ? '💧 การใช้น้ำรายห้อง (หน่วย)' : '⚡ การใช้ไฟรายห้อง (หน่วย)';
+
+  if (rows.length === 0) {
+    document.getElementById('usage-bars').innerHTML =
+      '<div style="text-align:center;color:#9CA3AF;padding:20px">ไม่มีข้อมูลเดือนนี้</div>';
+    document.getElementById('usage-alert-card').style.display = 'none';
+    return;
+  }
+
+  const key  = isWater ? 'waterUnit' : 'elecUnit';
+  const vals = rows.map(r => ({ room: r.room, val: r[key] }))
+                   .sort((a,b) => b.val - a.val);
+  const avg  = Math.round(vals.reduce((s,r) => s + r.val, 0) / vals.length);
+  const max  = Math.max(...vals.map(r => r.val));
+  const threshold = avg * 2; // แจ้งเตือนสูงกว่าเฉลี่ย 100%
+
+  document.getElementById('usage-avg-label').textContent = `เส้นแดง = เฉลี่ย ${avg} หน่วย`;
+
+  // alerts
+  const alerts = vals.filter(r => r.val > threshold);
+  const alertCard = document.getElementById('usage-alert-card');
+  if (alerts.length > 0) {
+    alertCard.style.display = 'block';
+    document.getElementById('usage-alerts').innerHTML = alerts.map(r => {
+      const pct   = Math.round((r.val / avg - 1) * 100);
+      const label = isWater ? 'น้ำ' : 'ไฟ';
+      const badge = pct > 150 ? '🔴 สูงมาก' : '🟠 สูง';
+      return `<div class="alert-item">
+        <div>
+          <div class="alert-room">ห้อง ${r.room}</div>
+          <div class="alert-detail">${label} ${r.val} หน่วย — สูงกว่าเฉลี่ย ${pct}%</div>
+        </div>
+        <span class="alert-badge">${badge}</span>
+      </div>`;
+    }).join('');
+  } else {
+    alertCard.style.display = 'none';
+  }
+
+  // bars
+  const avgPct = max > 0 ? Math.round((avg / max) * 100) : 0;
+  document.getElementById('usage-bars').innerHTML = vals.map(r => {
+    const pct    = max > 0 ? Math.round((r.val / max) * 100) : 0;
+    const isHigh = r.val > threshold;
+    const isWarn = r.val > avg * 1.5 && !isHigh;
+    const color  = isHigh ? '#DC2626' : isWarn ? '#EF9F27' : '#27A896';
+    return `<div class="bar-row">
+      <div class="bar-label">${r.room}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${pct}%;background:${color}"></div>
+        <div class="avg-line" style="left:${avgPct}%"></div>
+      </div>
+      <div class="bar-val">${r.val}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
 //  METER
 // ============================================================
 const ROOMS = { 1:[101,102,103,104,105,106,107,108,109,110], 2:[201,202,203,204,205,206,207,208,209,210], 3:[301,302,303,304,305,306,307,308,309,310] };
@@ -359,15 +489,15 @@ function renderTable(floor) {
       tr.innerHTML = `<td>${room}<div class="saved-badge">✓</div></td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" class="saved-input" placeholder="✓" disabled></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" class="saved-input" placeholder="✓" disabled></td><td>${room}<div class="saved-badge">✓</div></td>`;
     } else {
       const isPartnerUser = userRole === 'PARTNER';
-tr.innerHTML = `
-  <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>
-  <td class="old-val">${d.waterOld}</td>
-  <td><input type="number" id="w_${room}" placeholder="${isPartnerUser?'-':'กรอก'}" inputmode="numeric"
-    ${isPartnerUser ? 'disabled style="opacity:0.5"' : `oninput="validateMeter(this,${d.waterOld})"`}></td>
-  <td class="old-val">${d.elecOld}</td>
-  <td><input type="number" id="e_${room}" placeholder="${isPartnerUser?'-':'กรอก'}" inputmode="numeric"
-    ${isPartnerUser ? 'disabled style="opacity:0.5"' : `oninput="validateMeter(this,${d.elecOld})"`}></td>
-  <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>`;
+      tr.innerHTML = `
+        <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>
+        <td class="old-val">${d.waterOld}</td>
+        <td><input type="number" id="w_${room}" placeholder="${isPartnerUser?'-':'กรอก'}" inputmode="numeric"
+          ${isPartnerUser ? 'disabled style="opacity:0.5"' : `oninput="validateMeter(this,${d.waterOld})"`}></td>
+        <td class="old-val">${d.elecOld}</td>
+        <td><input type="number" id="e_${room}" placeholder="${isPartnerUser?'-':'กรอก'}" inputmode="numeric"
+          ${isPartnerUser ? 'disabled style="opacity:0.5"' : `oninput="validateMeter(this,${d.elecOld})"`}></td>
+        <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>`;
     }
     tbody.appendChild(tr);
   });
