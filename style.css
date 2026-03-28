@@ -66,7 +66,7 @@ body {
 }
 .tab {
   flex: 1; padding: 13px 0; text-align: center;
-  font-size: 12px; font-weight: 700; color: var(--text-3);
+  font-size: 11px; font-weight: 700; color: var(--text-3);
   cursor: pointer; border-bottom: 3px solid transparent;
   transition: all 0.25s; font-family: 'Sarabun', sans-serif;
   background: none; border-top: none; border-left: none; border-right: none;
@@ -152,6 +152,28 @@ input[type=date].form-input {
 .expense-divider { height: 1px; background: rgba(0,0,0,0.06); margin: 10px 0; border-radius: 99px; }
 .text-green { color: var(--green); font-weight: 700; }
 .text-red   { color: var(--red);   font-weight: 700; }
+
+/* ===== USAGE ===== */
+.usage-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.usage-toggle { display: flex; gap: 10px; }
+.utab {
+  flex: 1; padding: 14px 0; border: none; border-radius: var(--radius-md);
+  background: var(--bg); font-size: 16px; font-weight: 700; color: var(--text-3);
+  cursor: pointer; font-family: 'Sarabun', sans-serif; box-shadow: var(--neu-out);
+  transition: all 0.25s;
+}
+.utab.active { box-shadow: var(--neu-in); color: var(--teal); }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.bar-label { font-size: 13px; font-weight: 700; color: var(--text-2); width: 38px; text-align: right; flex-shrink: 0; }
+.bar-track { flex: 1; height: 12px; background: var(--bg); border-radius: 99px; overflow: visible; position: relative; box-shadow: var(--neu-in); }
+.bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+.avg-line { position: absolute; top: -3px; width: 2px; height: 18px; background: #DC2626; opacity: 0.5; border-radius: 1px; }
+.bar-val { font-size: 13px; font-weight: 700; color: var(--text-2); width: 36px; flex-shrink: 0; }
+.alert-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+.alert-item:last-child { border-bottom: none; }
+.alert-room { font-size: 16px; font-weight: 700; color: var(--text-1); }
+.alert-detail { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+.alert-badge { font-size: 13px; font-weight: 700; white-space: nowrap; }
 
 /* ===== METER ===== */
 .meter-month-bar { padding: 12px 18px; background: var(--bg); text-align: center; font-size: 14px; font-weight: 700; color: var(--teal-d); box-shadow: 0 4px 10px rgba(0,0,0,0.05); letter-spacing: 0.3px; }
