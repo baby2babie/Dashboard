@@ -460,42 +460,66 @@ function switchUsageTab(tab) {
   renderUsage();
 }
 function renderUsage() {
-  const monthKey=document.getElementById('usage-month-select').value;
-  const rows=usageData[monthKey]||[];
-  const isWater=currentUsageTab==='water';
-  document.getElementById('usage-chart-title').textContent=isWater?'💧 การใช้น้ำรายห้อง (หน่วย)':'⚡ การใช้ไฟรายห้อง (หน่วย)';
-  if(rows.length===0){
-    document.getElementById('usage-bars').innerHTML='<div style="text-align:center;color:#9CA3AF;padding:20px">ไม่มีข้อมูลเดือนนี้</div>';
-    document.getElementById('usage-alert-card').style.display='none';
+  const monthKey = document.getElementById('usage-month-select').value;
+  const rows     = usageData[monthKey] || [];
+  const isWater  = currentUsageTab === 'water';
+
+  document.getElementById('usage-chart-title').textContent =
+    isWater ? '💧 การใช้น้ำรายห้อง (หน่วย)' : '⚡ การใช้ไฟรายห้อง (หน่วย)';
+
+  // กรองเฉพาะ object ห้อง (ไม่เอา _globalAvg keys)
+  const roomRows = Array.isArray(rows) ? rows.filter(r => r && r.room) : [];
+
+  if (!roomRows.length) {
+    document.getElementById('usage-bars').innerHTML =
+      '<div style="text-align:center;color:#9CA3AF;padding:20px">ไม่มีข้อมูลเดือนนี้</div>';
+    document.getElementById('usage-alert-card').style.display = 'none';
     return;
   }
-  const key=isWater?'waterUnit':'elecUnit';
-  const vals=rows.map(r=>({room:r.room,val:r[key],pct:r[isWater?'waterPct':'elecPct']||0})).sort((a,b)=>b.val-a.val);
-  const avg=Math.round(vals.reduce((s,r)=>s+r.val,0)/vals.length);
-  const max=Math.max(...vals.map(r=>r.val));
-  document.getElementById('usage-avg-label').textContent=`เส้นแดง = เฉลี่ยทุกห้อง ${avg} หน่วย | เทียบกับ 3 เดือนก่อนของแต่ละห้อง`;
 
-  const alerts=vals.filter(r=>r.pct>=80);
-  const alertCard=document.getElementById('usage-alert-card');
-  if(alerts.length>0){
-    alertCard.style.display='block';
-    document.getElementById('usage-alerts').innerHTML=alerts.map(r=>{
-      const badge=r.pct>=120?'🔴 สูงมาก':'🟠 สูง';
-      const label=isWater?'น้ำ':'ไฟ';
+  const unitKey  = isWater ? 'waterUnit'  : 'elecUnit';
+  const pctKey   = isWater ? 'waterPct'   : 'elecPct';
+  const warnKey  = isWater ? 'waterWarn'  : 'elecWarn';
+  const alertKey = isWater ? 'waterAlert' : 'elecAlert';
+
+  // global avg จาก GAS fallback คำนวณเอง
+  const globalAvg = isWater
+    ? (rows._globalAvgWater || Math.round(roomRows.reduce((s,r) => s + r.waterUnit, 0) / roomRows.length))
+    : (rows._globalAvgElec  || Math.round(roomRows.reduce((s,r) => s + r.elecUnit,  0) / roomRows.length));
+
+  const vals = roomRows
+    .map(r => ({ room: r.room, val: r[unitKey], pct: r[pctKey]||0, warn: r[warnKey], isAlert: r[alertKey], usedBaseline: r.usedBaseline }))
+    .sort((a,b) => b.val - a.val);
+
+  const max = Math.max(...vals.map(r => r.val), 1);
+
+  document.getElementById('usage-avg-label').textContent =
+    `🔴 เส้น = เฉลี่ยรวม ${globalAvg} หน่วย  |  ⚠️ แจ้งเตือนเทียบห้องตัวเอง 3 เดือนก่อน`;
+
+  // alerts
+  const alerts = vals.filter(r => r.isAlert || r.warn);
+  const alertCard = document.getElementById('usage-alert-card');
+  if (alerts.length > 0) {
+    alertCard.style.display = 'block';
+    document.getElementById('usage-alerts').innerHTML = alerts.map(r => {
+      const badge = r.isAlert ? '🔴 สูงมาก' : '🟠 สูง';
+      const label = isWater ? 'น้ำ' : 'ไฟ';
+      const src   = r.usedBaseline ? 'เทียบห้องตัวเอง' : 'เทียบค่าเฉลี่ย';
       return `<div class="alert-item">
         <div>
           <div class="alert-room">ห้อง ${r.room}</div>
-          <div class="alert-detail">${label} ${r.val} หน่วย — สูงกว่าปกติ ${r.pct}%</div>
+          <div class="alert-detail">${label} ${r.val} หน่วย — สูงกว่าปกติ ${r.pct}% (${src})</div>
         </div>
         <span class="alert-badge">${badge}</span>
       </div>`;
     }).join('');
-  } else { alertCard.style.display='none'; }
+  } else { alertCard.style.display = 'none'; }
 
-  const avgPct=max>0?Math.round((avg/max)*100):0;
-  document.getElementById('usage-bars').innerHTML=vals.map(r=>{
-    const pct=max>0?Math.round((r.val/max)*100):0;
-    const color=r.pct>=120?'#DC2626':r.pct>=80?'#EF9F27':'#27A896';
+  // bars — เส้นแดง = global avg
+  const avgPct = Math.round((globalAvg / max) * 100);
+  document.getElementById('usage-bars').innerHTML = vals.map(r => {
+    const pct   = Math.round((r.val / max) * 100);
+    const color = r.isAlert ? '#DC2626' : r.warn ? '#EF9F27' : '#27A896';
     return `<div class="bar-row">
       <div class="bar-label">${r.room}</div>
       <div class="bar-track">
