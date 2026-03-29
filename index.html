@@ -9,9 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <meta name="theme-color" content="#E8EDF2">
-<style>
-  html, body { background: #E8EDF2 !important; }
-</style>
+<style>html,body{background:#E8EDF2!important}</style>
 </head>
 <body>
 
@@ -25,15 +23,7 @@
   </div>
 </div>
 
-<div class="tab-bar">
-  <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
-  <button class="tab"        onclick="switchTab('expense')">💸 Expense</button>
-  <button class="tab"        onclick="switchTab('usage')">💧 การใช้</button>
-  <button class="tab"        onclick="switchTab('meter')">📟 กรอก</button>
-  <button class="tab"        onclick="switchTab('yearly')">📅 รายปี</button>
-</div>
-
-<!-- ===== TAB 1: DASHBOARD ===== -->
+<!-- ===== DASHBOARD ===== -->
 <div class="page active" id="page-dashboard">
   <select class="month-select" id="month-select" onchange="loadDashboard()"></select>
   <div class="card"><div class="card-title">💰 ยอดรวมทั้งหมด</div><div class="card-value" id="d-total">-</div></div>
@@ -70,7 +60,7 @@
   </div>
 </div>
 
-<!-- ===== TAB 2: EXPENSE ===== -->
+<!-- ===== EXPENSE ===== -->
 <div class="page" id="page-expense">
   <div class="card">
     <div class="form-group">
@@ -107,7 +97,7 @@
   </div>
 </div>
 
-<!-- ===== TAB 3: USAGE ===== -->
+<!-- ===== USAGE ===== -->
 <div class="page" id="page-usage">
   <div class="usage-header">
     <select class="month-select" id="usage-month-select" onchange="renderUsage()" style="margin-bottom:0"></select>
@@ -116,12 +106,10 @@
       <button class="utab"        id="utab-elec"  onclick="switchUsageTab('elec')">⚡ ไฟ</button>
     </div>
   </div>
-
   <div class="card" id="usage-alert-card" style="display:none">
     <div class="card-title">⚠️ ห้องที่ควรตรวจสอบ</div>
     <div id="usage-alerts"></div>
   </div>
-
   <div class="card">
     <div class="card-title" id="usage-chart-title">💧 การใช้น้ำรายห้อง (หน่วย)</div>
     <div id="usage-avg-label" style="font-size:13px;color:#9CA3AF;margin-bottom:10px;text-align:right"></div>
@@ -129,7 +117,7 @@
   </div>
 </div>
 
-<!-- ===== TAB 4: METER ===== -->
+<!-- ===== METER ===== -->
 <div class="page" id="page-meter">
   <div class="meter-month-bar">📅 บันทึกมิเตอร์เดือน: <span id="meter-month">...</span></div>
   <div class="floor-tabs">
@@ -169,7 +157,7 @@
   </div>
 </div>
 
-<!-- ===== TAB 5: YEARLY ===== -->
+<!-- ===== YEARLY ===== -->
 <div class="page" id="page-yearly">
   <select class="year-select" id="year-select" onchange="loadYearly()"></select>
   <div class="card">
@@ -199,246 +187,315 @@
   </div>
 </div>
 
+<!-- ===== BOTTOM NAV ===== -->
+<div class="bottom-nav">
+  <div class="nav-items">
+    <button class="nav-item active" id="nav-dashboard" onclick="switchPage('dashboard')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Dashboard</span>
+    </button>
+    <button class="nav-item" id="nav-expense" onclick="switchPage('expense')">
+      <span class="nav-icon">💸</span>
+      <span class="nav-label">Expense</span>
+    </button>
+    <button class="nav-item" id="nav-usage" onclick="switchPage('usage')">
+      <span class="nav-icon">💧</span>
+      <span class="nav-label">การใช้</span>
+    </button>
+    <button class="nav-item" id="nav-meter" onclick="switchPage('meter')">
+      <span class="nav-icon">📟</span>
+      <span class="nav-label">กรอก</span>
+    </button>
+  </div>
+  <button class="drawer-btn" id="drawer-btn" onclick="toggleDrawer()">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<!-- ===== OVERLAY ===== -->
+<div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
+
+<!-- ===== DRAWER ===== -->
+<div class="drawer" id="drawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <div class="drawer-title">เมนูเพิ่มเติม</div>
+
+  <button class="drawer-item" onclick="switchPage('yearly');closeDrawer()">
+    <div class="drawer-item-icon" style="background:#DBEAFE">📅</div>
+    <div>
+      <div class="drawer-item-label">สรุปรายปี</div>
+      <div class="drawer-item-sub">รายรับ รายจ่าย กำไร</div>
+    </div>
+  </button>
+
+  <button class="drawer-item" id="drawer-create-bill" onclick="drawerToLine()">
+    <div class="drawer-item-icon" style="background:#DCFCE7">📋</div>
+    <div>
+      <div class="drawer-item-label">สร้างบิลเดือนใหม่</div>
+      <div class="drawer-item-sub">ก็อป sheet + reset อัตโนมัติ</div>
+    </div>
+  </button>
+
+  <button class="drawer-item" id="drawer-publish-bill" onclick="drawerToLine()">
+    <div class="drawer-item-icon" style="background:#FEF9C3">📢</div>
+    <div>
+      <div class="drawer-item-label">เผยแพร่บิล</div>
+      <div class="drawer-item-sub">ให้ผู้เช่าเห็นบิลใหม่</div>
+    </div>
+  </button>
+
+  <div class="drawer-title" style="margin-top:16px">แจ้งเตือน</div>
+
+  <button class="drawer-item" onclick="drawerToLine()">
+    <div class="drawer-item-icon" style="background:#D1FAE5">📨</div>
+    <div>
+      <div class="drawer-item-label">ส่งบิลแจ้งผู้เช่า</div>
+      <div class="drawer-item-sub">ส่งบิลประจำเดือนทุกห้อง</div>
+    </div>
+  </button>
+
+  <button class="drawer-item" onclick="drawerToLine()">
+    <div class="drawer-item-icon" style="background:#FEF3C7">⚠️</div>
+    <div>
+      <div class="drawer-item-label">แจ้งเตือนค้างชำระ</div>
+      <div class="drawer-item-sub">ส่งเฉพาะห้องที่ยังไม่ชำระ</div>
+    </div>
+  </button>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-//  CONFIG
-// ============================================================
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbw6QhU3fUwvVO5UdG3qNKRLa4cdx9AIcW9IiJwm65TxfAtwHhsXK--2PG2dXsjWCkJ8/exec';
 const LIFF_ID = '2004478373-Knd7GWOk';
 let userRole = 'ADMIN';
 
-async function callGAS(action, params = {}) {
-  const res = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action, ...params }) });
+async function callGAS(action, params={}) {
+  const res = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action,...params})});
   return res.json();
 }
-function showToast(msg, type='success', duration=3000) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast ' + type;
-  setTimeout(() => t.className = 'toast', duration);
+function showToast(msg,type='success',duration=3000) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+type;
+  setTimeout(()=>t.className='toast',duration);
 }
 function formatThaiMonth(k) {
-  if (!k || !k.includes('-')) return '-';
-  const th = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  const [y,m] = k.split('-');
-  return th[Number(m)-1] + ' ' + (Number(y)+543);
+  if(!k||!k.includes('-')) return '-';
+  const th=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const [y,m]=k.split('-');
+  return th[Number(m)-1]+' '+(Number(y)+543);
 }
 
-// ============================================================
-//  LIFF + INIT + TAB
-// ============================================================
+// ── LIFF ──
 function fetchLiffProfile() {
-  liff.init({ liffId: LIFF_ID, withLoginOnExternalBrowser: true })
-    .then(() => {
-      if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return null; }
+  liff.init({liffId:LIFF_ID,withLoginOnExternalBrowser:true})
+    .then(()=>{
+      if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return null;}
       return liff.getProfile();
     })
-    .then(async profile => {
-      if (!profile) return;
-      document.getElementById('admin-name').textContent = 'สวัสดีค่ะ คุณ' + profile.displayName;
-      const result = await callGAS('getUserRole', { userId: profile.userId });
-      userRole = result.role || 'VISITOR';
-      if (userRole === 'PARTNER') {
-        document.getElementById('admin-name').textContent += ' (Partner)';
+    .then(async profile=>{
+      if(!profile) return;
+      document.getElementById('admin-name').textContent='สวัสดีครับ คุณ'+profile.displayName;
+      const result=await callGAS('getUserRole',{userId:profile.userId});
+      userRole=result.role||'VISITOR';
+      if(userRole==='PARTNER'){
+        document.getElementById('admin-name').textContent+=' (Partner)';
+        ['drawer-create-bill','drawer-publish-bill'].forEach(id=>{
+          const el=document.getElementById(id); if(el) el.style.display='none';
+        });
       }
     })
-    .catch(() => { document.getElementById('admin-name').textContent = 'Admin Dashboard'; });
-}
-
-function switchTab(tab) {
-  const tabs = ['dashboard','expense','usage','meter','yearly'];
-  document.querySelectorAll('.tab').forEach((t,i) =>
-    t.classList.toggle('active', tabs[i] === tab));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + tab).classList.add('active');
-
-  if (tab === 'meter') {
-    loadMeterData();
-    document.querySelector('.btn-wrap').style.display = userRole === 'PARTNER' ? 'none' : 'flex';
-  } else {
-    document.querySelector('.btn-wrap').style.display = 'none';
-  }
-
-  if (tab === 'usage')  loadUsage();
-  if (tab === 'yearly') loadYearly();
+    .catch(()=>{document.getElementById('admin-name').textContent='Admin Dashboard';});
 }
 
 async function init() {
-  switchTab('dashboard');
+  switchPage('dashboard');
   initMonthSelect(); loadDashboard();
   initExpenseDate();
   initUsageMonthSelect();
   switchFloor(1);
   initYearSelect();
-  document.getElementById('admin-name').textContent = 'Admin Dashboard';
+  document.getElementById('admin-name').textContent='Admin Dashboard';
   fetchLiffProfile();
 }
 
-// ============================================================
-//  DASHBOARD
-// ============================================================
+// ── PAGE + DRAWER ──
+const NAV_PAGES=['dashboard','expense','usage','meter'];
+
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  NAV_PAGES.forEach(p=>{
+    const nav=document.getElementById('nav-'+p);
+    if(nav) nav.classList.toggle('active',p===page);
+  });
+  if(page==='meter'){
+    loadMeterData();
+    document.querySelector('.btn-wrap').style.display=userRole==='PARTNER'?'none':'flex';
+  } else {
+    document.querySelector('.btn-wrap').style.display='none';
+  }
+  if(page==='usage')  loadUsage();
+  if(page==='yearly') loadYearly();
+  window.scrollTo(0,0);
+}
+
+function toggleDrawer() {
+  const d=document.getElementById('drawer'),o=document.getElementById('overlay'),b=document.getElementById('drawer-btn');
+  const open=d.classList.contains('open');
+  d.classList.toggle('open',!open); o.classList.toggle('show',!open); b.classList.toggle('open',!open);
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('drawer-btn').classList.remove('open');
+}
+function drawerToLine() {
+  closeDrawer();
+  if(liff.isInClient()) liff.sendMessages([{type:'text',text:'admin'}]).catch(()=>{});
+  else showToast('กรุณาเปิดผ่าน LINE แล้วพิมพ์ "admin" ครับ','error',4000);
+}
+
+// ── DASHBOARD ──
 function initMonthSelect() {
-  const sel = document.getElementById('month-select');
-  const now = new Date();
-  const th  = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  for (let i = 0; i < 12; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-    const val = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-    const opt = document.createElement('option');
-    opt.value = val; opt.textContent = th[d.getMonth()] + ' ' + (d.getFullYear()+543);
-    if (i===0) opt.selected = true;
+  const sel=document.getElementById('month-select'), now=new Date();
+  const th=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  for(let i=0;i<12;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const val=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    const opt=document.createElement('option');
+    opt.value=val; opt.textContent=th[d.getMonth()]+' '+(d.getFullYear()+543);
+    if(i===0) opt.selected=true;
     sel.appendChild(opt);
   }
 }
 async function loadDashboard() {
-  const month = document.getElementById('month-select').value;
-  ['d-total','d-paid','d-unpaid','d-percent','d-active','d-vacant','d-moveout','d-net-profit'].forEach(id => { document.getElementById(id).textContent = '...'; });
+  const month=document.getElementById('month-select').value;
+  ['d-total','d-paid','d-unpaid','d-percent','d-active','d-vacant','d-moveout','d-net-profit'].forEach(id=>{document.getElementById(id).textContent='...';});
   try {
-    const data = await callGAS('getDashboardData', { monthKey: month });
-    const fmt = n => Number(n).toLocaleString('th-TH') + ' บาท';
-    document.getElementById('d-total').textContent    = fmt(data.total);
-    document.getElementById('d-paid').textContent     = fmt(data.paid);
-    document.getElementById('d-unpaid').textContent   = fmt(data.unpaid);
-    document.getElementById('d-percent').textContent  = data.percent + '%';
-    document.getElementById('d-progress').style.width = data.percent + '%';
-    document.getElementById('d-active').textContent   = data.activeRooms + ' ห้อง';
-    document.getElementById('d-vacant').textContent   = data.vacantRooms + ' ห้อง';
-    const mel = document.getElementById('d-moveout');
-    mel.textContent = data.moveOutRooms + ' ห้อง';
-    mel.className   = data.moveOutRooms > 0 ? 'card-value red' : 'card-value';
-    document.getElementById('d-exp-water').textContent    = fmt(data.expWater);
-    document.getElementById('d-exp-elec').textContent     = fmt(data.expElec);
-    document.getElementById('d-exp-internet').textContent = fmt(data.internet);
-    document.getElementById('d-exp-mgmt').textContent     = fmt(data.mgmt);
-    document.getElementById('d-exp-supplies').textContent = fmt(data.supplies);
-    document.getElementById('d-exp-profit').textContent   = fmt(data.profitShare);
-    document.getElementById('d-exp-total').textContent    = fmt(data.totalExpense);
-    const pel = document.getElementById('d-net-profit');
-    pel.textContent = fmt(data.netProfit);
-    pel.className   = 'card-value ' + (data.netProfit >= 0 ? 'green' : 'red');
-    document.getElementById('d-dep-in').textContent  = fmt(data.depIn);
-    document.getElementById('d-dep-out').textContent = fmt(data.depOut);
-  } catch(err) { showToast('❌ โหลดข้อมูลไม่ได้: ' + err.message, 'error'); }
+    const data=await callGAS('getDashboardData',{monthKey:month});
+    const fmt=n=>Number(n).toLocaleString('th-TH')+' บาท';
+    document.getElementById('d-total').textContent=fmt(data.total);
+    document.getElementById('d-paid').textContent=fmt(data.paid);
+    document.getElementById('d-unpaid').textContent=fmt(data.unpaid);
+    document.getElementById('d-percent').textContent=data.percent+'%';
+    document.getElementById('d-progress').style.width=data.percent+'%';
+    document.getElementById('d-active').textContent=data.activeRooms+' ห้อง';
+    document.getElementById('d-vacant').textContent=data.vacantRooms+' ห้อง';
+    const mel=document.getElementById('d-moveout');
+    mel.textContent=data.moveOutRooms+' ห้อง';
+    mel.className=data.moveOutRooms>0?'card-value red':'card-value';
+    document.getElementById('d-exp-water').textContent=fmt(data.expWater);
+    document.getElementById('d-exp-elec').textContent=fmt(data.expElec);
+    document.getElementById('d-exp-internet').textContent=fmt(data.internet);
+    document.getElementById('d-exp-mgmt').textContent=fmt(data.mgmt);
+    document.getElementById('d-exp-supplies').textContent=fmt(data.supplies);
+    document.getElementById('d-exp-profit').textContent=fmt(data.profitShare);
+    document.getElementById('d-exp-total').textContent=fmt(data.totalExpense);
+    const pel=document.getElementById('d-net-profit');
+    pel.textContent=fmt(data.netProfit);
+    pel.className='card-value '+(data.netProfit>=0?'green':'red');
+    document.getElementById('d-dep-in').textContent=fmt(data.depIn);
+    document.getElementById('d-dep-out').textContent=fmt(data.depOut);
+  } catch(err){showToast('❌ โหลดข้อมูลไม่ได้: '+err.message,'error');}
 }
 
-// ============================================================
-//  EXPENSE
-// ============================================================
+// ── EXPENSE ──
 function initExpenseDate() {
-  const t = new Date();
-  document.getElementById('exp-date').value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  const t=new Date();
+  document.getElementById('exp-date').value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
 }
 async function saveExpense() {
-  const date=document.getElementById('exp-date').value, category=document.getElementById('exp-category').value;
-  const item=document.getElementById('exp-item').value.trim(), amount=document.getElementById('exp-amount').value;
+  const date=document.getElementById('exp-date').value,category=document.getElementById('exp-category').value;
+  const item=document.getElementById('exp-item').value.trim(),amount=document.getElementById('exp-amount').value;
   const note=document.getElementById('exp-note').value.trim();
-  const who=document.getElementById('admin-name').textContent.replace('สวัสดีค่ะ คุณ','').trim();
-  if (!date||!category||!item||!amount) { showToast('⚠️ กรุณากรอกข้อมูลให้ครบค่ะ','error'); return; }
-  const month=date.substring(0,7), btn=document.getElementById('btn-expense');
+  const who=document.getElementById('admin-name').textContent.replace('สวัสดีครับ คุณ','').trim();
+  if(!date||!category||!item||!amount){showToast('⚠️ กรุณากรอกข้อมูลให้ครบค่ะ','error');return;}
+  const month=date.substring(0,7),btn=document.getElementById('btn-expense');
   btn.disabled=true; btn.textContent='⏳ กำลังบันทึก...';
   try {
-    const result = await callGAS('saveExpenseData', { date, month, category, item, amount, note, who });
-    if (result.success) {
+    const result=await callGAS('saveExpenseData',{date,month,category,item,amount,note,who});
+    if(result.success){
       showToast('✅ บันทึก Expense เรียบร้อยค่ะ');
-      document.getElementById('exp-item').value=''; document.getElementById('exp-amount').value=''; document.getElementById('exp-note').value='';
-    } else { showToast('❌ '+result.message,'error'); }
-  } catch(err) { showToast('❌ '+err.message,'error'); }
+      document.getElementById('exp-item').value='';
+      document.getElementById('exp-amount').value='';
+      document.getElementById('exp-note').value='';
+    } else showToast('❌ '+result.message,'error');
+  } catch(err){showToast('❌ '+err.message,'error');}
   btn.disabled=false; btn.textContent='💾 บันทึก Expense';
 }
 
-// ============================================================
-//  USAGE — การใช้น้ำ/ไฟรายห้อง
-// ============================================================
-let usageData = {}, currentUsageTab = 'water';
+// ── USAGE ──
+let usageData={}, currentUsageTab='water';
 
 function initUsageMonthSelect() {
-  const sel = document.getElementById('usage-month-select');
-  const th  = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  const now = new Date();
-  for (let i = 0; i < 6; i++) {
-    const d   = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const val = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-    const opt = document.createElement('option');
-    opt.value = val;
-    opt.textContent = th[d.getMonth()] + ' ' + (d.getFullYear()+543);
-    if (i === 0) opt.selected = true;
+  const sel=document.getElementById('usage-month-select');
+  const th=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const now=new Date();
+  for(let i=0;i<6;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const val=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    const opt=document.createElement('option');
+    opt.value=val; opt.textContent=th[d.getMonth()]+' '+(d.getFullYear()+543);
+    if(i===0) opt.selected=true;
     sel.appendChild(opt);
   }
 }
-
 async function loadUsage() {
-  document.getElementById('usage-bars').innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:20px">⏳ กำลังโหลด...</div>';
-  document.getElementById('usage-alert-card').style.display = 'none';
+  document.getElementById('usage-bars').innerHTML='<div style="text-align:center;color:#9CA3AF;padding:20px">⏳ กำลังโหลด...</div>';
+  document.getElementById('usage-alert-card').style.display='none';
   try {
-    const result = await callGAS('getUsageData', { months: 6 });
-    if (!result.success) return;
-    usageData = result.data;
+    const result=await callGAS('getUsageData',{months:6});
+    if(!result.success) return;
+    usageData=result.data;
     renderUsage();
-  } catch(e) {
-    document.getElementById('usage-bars').innerHTML = '<div style="text-align:center;color:#DC2626;padding:20px">❌ โหลดไม่ได้</div>';
+  } catch(e){
+    document.getElementById('usage-bars').innerHTML='<div style="text-align:center;color:#DC2626;padding:20px">❌ โหลดไม่ได้</div>';
   }
 }
-
 function switchUsageTab(tab) {
-  currentUsageTab = tab;
-  document.getElementById('utab-water').classList.toggle('active', tab === 'water');
-  document.getElementById('utab-elec').classList.toggle('active',  tab === 'elec');
+  currentUsageTab=tab;
+  document.getElementById('utab-water').classList.toggle('active',tab==='water');
+  document.getElementById('utab-elec').classList.toggle('active',tab==='elec');
   renderUsage();
 }
-
 function renderUsage() {
-  const monthKey = document.getElementById('usage-month-select').value;
-  const rows     = usageData[monthKey] || [];
-  const isWater  = currentUsageTab === 'water';
-
-  document.getElementById('usage-chart-title').textContent =
-    isWater ? '💧 การใช้น้ำรายห้อง (หน่วย)' : '⚡ การใช้ไฟรายห้อง (หน่วย)';
-
-  if (rows.length === 0) {
-    document.getElementById('usage-bars').innerHTML =
-      '<div style="text-align:center;color:#9CA3AF;padding:20px">ไม่มีข้อมูลเดือนนี้</div>';
-    document.getElementById('usage-alert-card').style.display = 'none';
+  const monthKey=document.getElementById('usage-month-select').value;
+  const rows=usageData[monthKey]||[];
+  const isWater=currentUsageTab==='water';
+  document.getElementById('usage-chart-title').textContent=isWater?'💧 การใช้น้ำรายห้อง (หน่วย)':'⚡ การใช้ไฟรายห้อง (หน่วย)';
+  if(rows.length===0){
+    document.getElementById('usage-bars').innerHTML='<div style="text-align:center;color:#9CA3AF;padding:20px">ไม่มีข้อมูลเดือนนี้</div>';
+    document.getElementById('usage-alert-card').style.display='none';
     return;
   }
+  const key=isWater?'waterUnit':'elecUnit';
+  const vals=rows.map(r=>({room:r.room,val:r[key],pct:r[isWater?'waterPct':'elecPct']||0})).sort((a,b)=>b.val-a.val);
+  const avg=Math.round(vals.reduce((s,r)=>s+r.val,0)/vals.length);
+  const max=Math.max(...vals.map(r=>r.val));
+  document.getElementById('usage-avg-label').textContent=`เส้นแดง = เฉลี่ยทุกห้อง ${avg} หน่วย | เทียบกับ 3 เดือนก่อนของแต่ละห้อง`;
 
-  const key  = isWater ? 'waterUnit' : 'elecUnit';
-  const vals = rows.map(r => ({ room: r.room, val: r[key] }))
-                   .sort((a,b) => b.val - a.val);
-  const avg  = Math.round(vals.reduce((s,r) => s + r.val, 0) / vals.length);
-  const max  = Math.max(...vals.map(r => r.val));
-  const threshold = avg * 2; // แจ้งเตือนสูงกว่าเฉลี่ย 100%
-
-  document.getElementById('usage-avg-label').textContent = `เส้นแดง = เฉลี่ย ${avg} หน่วย`;
-
-  // alerts
-  const alerts = vals.filter(r => r.val > threshold);
-  const alertCard = document.getElementById('usage-alert-card');
-  if (alerts.length > 0) {
-    alertCard.style.display = 'block';
-    document.getElementById('usage-alerts').innerHTML = alerts.map(r => {
-      const pct   = Math.round((r.val / avg - 1) * 100);
-      const label = isWater ? 'น้ำ' : 'ไฟ';
-      const badge = pct > 150 ? '🔴 สูงมาก' : '🟠 สูง';
+  const alerts=vals.filter(r=>r.pct>=80);
+  const alertCard=document.getElementById('usage-alert-card');
+  if(alerts.length>0){
+    alertCard.style.display='block';
+    document.getElementById('usage-alerts').innerHTML=alerts.map(r=>{
+      const badge=r.pct>=120?'🔴 สูงมาก':'🟠 สูง';
+      const label=isWater?'น้ำ':'ไฟ';
       return `<div class="alert-item">
         <div>
           <div class="alert-room">ห้อง ${r.room}</div>
-          <div class="alert-detail">${label} ${r.val} หน่วย — สูงกว่าเฉลี่ย ${pct}%</div>
+          <div class="alert-detail">${label} ${r.val} หน่วย — สูงกว่าปกติ ${r.pct}%</div>
         </div>
         <span class="alert-badge">${badge}</span>
       </div>`;
     }).join('');
-  } else {
-    alertCard.style.display = 'none';
-  }
+  } else { alertCard.style.display='none'; }
 
-  // bars
-  const avgPct = max > 0 ? Math.round((avg / max) * 100) : 0;
-  document.getElementById('usage-bars').innerHTML = vals.map(r => {
-    const pct    = max > 0 ? Math.round((r.val / max) * 100) : 0;
-    const isHigh = r.val > threshold;
-    const isWarn = r.val > avg * 1.5 && !isHigh;
-    const color  = isHigh ? '#DC2626' : isWarn ? '#EF9F27' : '#27A896';
+  const avgPct=max>0?Math.round((avg/max)*100):0;
+  document.getElementById('usage-bars').innerHTML=vals.map(r=>{
+    const pct=max>0?Math.round((r.val/max)*100):0;
+    const color=r.pct>=120?'#DC2626':r.pct>=80?'#EF9F27':'#27A896';
     return `<div class="bar-row">
       <div class="bar-label">${r.room}</div>
       <div class="bar-track">
@@ -450,151 +507,145 @@ function renderUsage() {
   }).join('');
 }
 
-// ============================================================
-//  METER
-// ============================================================
-const ROOMS = { 1:[101,102,103,104,105,106,107,108,109,110], 2:[201,202,203,204,205,206,207,208,209,210], 3:[301,302,303,304,305,306,307,308,309,310] };
-const savedRooms = { 1:new Set(), 2:new Set(), 3:new Set() };
-let meterOldMap = {}, currentFloor = 1;
+// ── METER ──
+const ROOMS={1:[101,102,103,104,105,106,107,108,109,110],2:[201,202,203,204,205,206,207,208,209,210],3:[301,302,303,304,305,306,307,308,309,310]};
+const savedRooms={1:new Set(),2:new Set(),3:new Set()};
+let meterOldMap={}, currentFloor=1;
 
 async function loadMeterData() {
-  document.getElementById('meter-month').textContent = '⏳';
+  document.getElementById('meter-month').textContent='⏳';
   try {
-    const result = await callGAS('getMeterData');
-    if (!result.success) return;
-    document.getElementById('meter-month').textContent = formatThaiMonth((result.sheetName||'').replace('BILL_','').replace('_','-'));
-    meterOldMap = {};
-    result.data.forEach(r => { meterOldMap[r.room] = r; });
+    const result=await callGAS('getMeterData');
+    if(!result.success) return;
+    document.getElementById('meter-month').textContent=formatThaiMonth((result.sheetName||'').replace('BILL_','').replace('_','-'));
+    meterOldMap={};
+    result.data.forEach(r=>{meterOldMap[r.room]=r;});
     renderTable(currentFloor);
-  } catch(e) { document.getElementById('meter-month').textContent = '-'; }
+  } catch(e){document.getElementById('meter-month').textContent='-';}
 }
 function switchFloor(floor) {
-  currentFloor = floor;
-  [1,2,3].forEach(f => document.getElementById('tab'+f).classList.toggle('active', f===floor));
+  currentFloor=floor;
+  [1,2,3].forEach(f=>document.getElementById('tab'+f).classList.toggle('active',f===floor));
   renderTable(floor); updateProgress(floor);
   document.getElementById('result-box').classList.remove('show');
 }
 function renderTable(floor) {
-  const tbody = document.getElementById('meter-table');
-  tbody.innerHTML = '';
-  ROOMS[floor].forEach(room => {
-    const isSaved = savedRooms[floor].has(room);
-    const d = meterOldMap[String(room)] || { waterOld:'?', elecOld:'?', waterNew:0, elecNew:0 };
-    const hasNew = d.waterNew > 0 || d.elecNew > 0;
-    const tr = document.createElement('tr');
-    tr.className = 'room-row' + (isSaved ? ' saved' : '');
-    if (hasNew) tr.classList.add('has-filled');
-    tr.id = 'row_' + room;
-    if (isSaved) {
-      tr.innerHTML = `<td>${room}<div class="saved-badge">✓</div></td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" class="saved-input" placeholder="✓" disabled></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" class="saved-input" placeholder="✓" disabled></td><td>${room}<div class="saved-badge">✓</div></td>`;
+  const tbody=document.getElementById('meter-table');
+  tbody.innerHTML='';
+  ROOMS[floor].forEach(room=>{
+    const isSaved=savedRooms[floor].has(room);
+    const d=meterOldMap[String(room)]||{waterOld:'?',elecOld:'?',waterNew:0,elecNew:0};
+    const hasNew=d.waterNew>0||d.elecNew>0;
+    const tr=document.createElement('tr');
+    tr.className='room-row'+(isSaved?' saved':'');
+    if(hasNew) tr.classList.add('has-filled');
+    tr.id='row_'+room;
+    if(isSaved){
+      tr.innerHTML=`<td>${room}<div class="saved-badge">✓</div></td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" class="saved-input" placeholder="✓" disabled></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" class="saved-input" placeholder="✓" disabled></td><td>${room}<div class="saved-badge">✓</div></td>`;
     } else {
-      const isPartnerUser = userRole === 'PARTNER';
-      tr.innerHTML = `
+      const ip=userRole==='PARTNER';
+      tr.innerHTML=`
         <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>
         <td class="old-val">${d.waterOld}</td>
-        <td><input type="number" id="w_${room}" placeholder="${isPartnerUser?'-':'กรอก'}" inputmode="numeric"
-          ${isPartnerUser ? 'disabled style="opacity:0.5"' : `oninput="validateMeter(this,${d.waterOld})"`}></td>
+        <td><input type="number" id="w_${room}" placeholder="${ip?'-':'กรอก'}" inputmode="numeric" ${ip?'disabled style="opacity:0.5"':`oninput="validateMeter(this,${d.waterOld})"`}></td>
         <td class="old-val">${d.elecOld}</td>
-        <td><input type="number" id="e_${room}" placeholder="${isPartnerUser?'-':'กรอก'}" inputmode="numeric"
-          ${isPartnerUser ? 'disabled style="opacity:0.5"' : `oninput="validateMeter(this,${d.elecOld})"`}></td>
+        <td><input type="number" id="e_${room}" placeholder="${ip?'-':'กรอก'}" inputmode="numeric" ${ip?'disabled style="opacity:0.5"':`oninput="validateMeter(this,${d.elecOld})"`}></td>
         <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>`;
     }
     tbody.appendChild(tr);
   });
 }
-function validateMeter(input, oldVal) {
-  const val = Number(input.value);
-  if (input.value!=='' && val < Number(oldVal)) { input.classList.add('error-input'); input.title='ต้องมากกว่าค่าเก่า ('+oldVal+')'; }
-  else { input.classList.remove('error-input'); input.title=''; }
+function validateMeter(input,oldVal) {
+  const val=Number(input.value);
+  if(input.value!==''&&val<Number(oldVal)){input.classList.add('error-input');input.title='ต้องมากกว่าค่าเก่า ('+oldVal+')';}
+  else{input.classList.remove('error-input');input.title='';}
 }
 function updateProgress(floor) {
-  const total=ROOMS[floor].length, done=savedRooms[floor].size, pct=Math.round(done/total*100);
-  document.getElementById('prog-label').textContent = `กรอกแล้ว ${done} / ${total} ห้อง`;
-  document.getElementById('prog-pct').textContent   = pct + '%';
-  document.getElementById('prog-fill').style.width  = pct + '%';
-  [1,2,3].forEach(f => { const cnt=savedRooms[f].size; document.getElementById('tab'+f).innerHTML=`ชั้น ${f}`+(cnt>0?` <span class="done-count">${cnt}</span>`:''); });
+  const total=ROOMS[floor].length,done=savedRooms[floor].size,pct=Math.round(done/total*100);
+  document.getElementById('prog-label').textContent=`กรอกแล้ว ${done} / ${total} ห้อง`;
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+  [1,2,3].forEach(f=>{const cnt=savedRooms[f].size;document.getElementById('tab'+f).innerHTML=`ชั้น ${f}`+(cnt>0?` <span class="done-count">${cnt}</span>`:'');});
 }
 async function saveMeter() {
-  const btn=document.getElementById('btn-save'), meters=[];
+  const btn=document.getElementById('btn-save'),meters=[];
   let hasError=false;
-  ROOMS[currentFloor].forEach(room => {
-    if (savedRooms[currentFloor].has(room)) return;
-    const wEl=document.getElementById('w_'+room), eEl=document.getElementById('e_'+room);
-    if (wEl?.classList.contains('error-input')||eEl?.classList.contains('error-input')) { hasError=true; return; }
-    const w=wEl?.value, e=eEl?.value;
-    if (w||e) meters.push({ room:String(room), water:w||"0", electric:e||"0" });
+  ROOMS[currentFloor].forEach(room=>{
+    if(savedRooms[currentFloor].has(room)) return;
+    const wEl=document.getElementById('w_'+room),eEl=document.getElementById('e_'+room);
+    if(wEl?.classList.contains('error-input')||eEl?.classList.contains('error-input')){hasError=true;return;}
+    const w=wEl?.value,e=eEl?.value;
+    if(w||e) meters.push({room:String(room),water:w||"0",electric:e||"0"});
   });
-  if (hasError) { showToast('⚠️ มีค่ามิเตอร์ต่ำกว่าค่าเก่า กรุณาตรวจสอบค่ะ','error'); return; }
-  if (!meters.length) { showToast('⚠️ ไม่มีข้อมูลใหม่ที่ต้องบันทึกค่ะ','error'); return; }
+  if(hasError){showToast('⚠️ มีค่ามิเตอร์ต่ำกว่าค่าเก่า กรุณาตรวจสอบค่ะ','error');return;}
+  if(!meters.length){showToast('⚠️ ไม่มีข้อมูลใหม่ที่ต้องบันทึกค่ะ','error');return;}
   btn.disabled=true; btn.textContent='⏳ กำลังบันทึก...';
   try {
-    const result = await callGAS('saveMeterData', { floor:currentFloor, meters });
-    result.saved.forEach(s => {
+    const result=await callGAS('saveMeterData',{floor:currentFloor,meters});
+    result.saved.forEach(s=>{
       savedRooms[currentFloor].add(Number(s.room));
-      if (meterOldMap[s.room]) { meterOldMap[s.room].waterNew=s.waterNew; meterOldMap[s.room].elecNew=s.elecNew; }
+      if(meterOldMap[s.room]){meterOldMap[s.room].waterNew=s.waterNew;meterOldMap[s.room].elecNew=s.elecNew;}
       const row=document.getElementById('row_'+s.room);
-      if (row) {
+      if(row){
         row.classList.add('saved');
         row.cells[0].innerHTML=`${s.room}<div class="saved-badge">✓</div>`;
         row.cells[5].innerHTML=`${s.room}<div class="saved-badge">✓</div>`;
-        ['w_','e_'].forEach(p => { const el=document.getElementById(p+s.room); if(el){el.classList.add('saved-input');el.disabled=true;el.placeholder='✓';el.value='';} });
+        ['w_','e_'].forEach(p=>{const el=document.getElementById(p+s.room);if(el){el.classList.add('saved-input');el.disabled=true;el.placeholder='✓';el.value='';}});
       }
     });
     updateProgress(currentFloor);
     const box=document.getElementById('result-box'); box.classList.add('show');
     let html=`<div class="result-title">✅ บันทึกแล้ว ${result.saved.length} ห้อง</div>`;
-    result.saved.forEach(s => { html+=`<div class="result-item">🏠 ห้อง ${s.room} 💧 ${s.waterOld}→${s.waterNew} <span class="unit-badge">+${s.wUnit}</span> ⚡ ${s.elecOld}→${s.elecNew} <span class="unit-badge">+${s.eUnit}</span></div>`; });
-    result.errors.forEach(e => { html+=`<div class="result-item err">❌ ${e}</div>`; });
+    result.saved.forEach(s=>{html+=`<div class="result-item">🏠 ห้อง ${s.room} 💧 ${s.waterOld}→${s.waterNew} <span class="unit-badge">+${s.wUnit}</span> ⚡ ${s.elecOld}→${s.elecNew} <span class="unit-badge">+${s.eUnit}</span></div>`;});
+    result.errors.forEach(e=>{html+=`<div class="result-item err">❌ ${e}</div>`;});
     box.innerHTML=html;
     showToast(`✅ บันทึก ${result.saved.length} ห้องเรียบร้อยค่ะ`);
-  } catch(err) { showToast('❌ '+(err.message||err),'error',4000); }
+  } catch(err){showToast('❌ '+(err.message||err),'error',4000);}
   btn.disabled=false; btn.textContent='💾 บันทึกชั้นนี้';
 }
 
-// ============================================================
-//  YEARLY
-// ============================================================
+// ── YEARLY ──
 const MONTH_LABELS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-let barChart=null, lineChart=null;
+let barChart=null,lineChart=null;
 
 function initYearSelect() {
-  const sel=document.getElementById('year-select'), now=new Date().getFullYear();
-  for (let i=0;i<3;i++) {
-    const y=now-i, opt=document.createElement('option');
+  const sel=document.getElementById('year-select'),now=new Date().getFullYear();
+  for(let i=0;i<3;i++){
+    const y=now-i,opt=document.createElement('option');
     opt.value=y; opt.textContent='พ.ศ. '+(y+543)+'  (ค.ศ. '+y+')';
-    if (i===0) opt.selected=true;
+    if(i===0) opt.selected=true;
     sel.appendChild(opt);
   }
 }
 async function loadYearly() {
   const year=document.getElementById('year-select').value;
   try {
-    const data=await callGAS('getYearCompareData', { year:Number(year) });
+    const data=await callGAS('getYearCompareData',{year:Number(year)});
     renderYearCharts(data,year); renderCompareTable(data,year);
-  } catch(err) { showToast('❌ โหลดข้อมูลไม่ได้: '+err.message,'error'); }
+  } catch(err){showToast('❌ โหลดข้อมูลไม่ได้: '+err.message,'error');}
 }
 function renderYearCharts(data,year) {
-  const thY=Number(year)+543, thYP=Number(year)-1+543, cur=data.current, prev=data.prev;
+  const thY=Number(year)+543,thYP=Number(year)-1+543,cur=data.current,prev=data.prev;
   function toArr(md,key){const m={};if(md)md.forEach(x=>{m[x.month]=x[key]||0;});return MONTH_LABELS.map(l=>m[l]||0);}
   const cI=toArr(cur?.monthlyData,'income'),cE=toArr(cur?.monthlyData,'expense'),cP=toArr(cur?.monthlyData,'profit'),pP=toArr(prev?.monthlyData,'profit');
   const bCtx=document.getElementById('year-bar-chart').getContext('2d');
-  if (barChart) barChart.destroy();
+  if(barChart) barChart.destroy();
   barChart=new Chart(bCtx,{type:'bar',data:{labels:MONTH_LABELS,datasets:[{label:'รายรับ',data:cI,backgroundColor:'rgba(22,163,74,0.7)',borderRadius:4},{label:'รายจ่าย',data:cE,backgroundColor:'rgba(220,38,38,0.7)',borderRadius:4},{label:'กำไร',data:cP,backgroundColor:'rgba(29,78,216,0.7)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{family:'Sarabun',size:13}}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+Number(ctx.raw).toLocaleString('th-TH')+' บาท'}}},scales:{x:{ticks:{font:{family:'Sarabun',size:12}}},y:{ticks:{font:{family:'Sarabun',size:11},callback:v=>Number(v).toLocaleString('th-TH')}}}}});
   const lCtx=document.getElementById('year-line-chart').getContext('2d');
-  if (lineChart) lineChart.destroy();
+  if(lineChart) lineChart.destroy();
   lineChart=new Chart(lCtx,{type:'line',data:{labels:MONTH_LABELS,datasets:[{label:'กำไร พ.ศ. '+thY,data:cP,borderColor:'#1D4ED8',backgroundColor:'rgba(29,78,216,0.1)',borderWidth:2,pointRadius:4,tension:0.3,fill:true},{label:'กำไร พ.ศ. '+thYP,data:pP,borderColor:'#9CA3AF',backgroundColor:'rgba(156,163,175,0.1)',borderWidth:2,pointRadius:4,tension:0.3,borderDash:[5,5],fill:false}]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{family:'Sarabun',size:13}}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+Number(ctx.raw).toLocaleString('th-TH')+' บาท'}}},scales:{x:{ticks:{font:{family:'Sarabun',size:12}}},y:{ticks:{font:{family:'Sarabun',size:11},callback:v=>Number(v).toLocaleString('th-TH')}}}}});
 }
 function renderCompareTable(data,year) {
-  const thY=Number(year)+543, thYP=Number(year)-1+543, cur=data.current, prev=data.prev;
+  const thY=Number(year)+543,thYP=Number(year)-1+543,cur=data.current,prev=data.prev;
   document.getElementById('th-cur-income').textContent='รับ '+thY; document.getElementById('th-prev-income').textContent='รับ '+thYP;
   document.getElementById('th-cur-expense').textContent='จ่าย '+thY; document.getElementById('th-prev-expense').textContent='จ่าย '+thYP;
   document.getElementById('th-cur-profit').textContent='กำไร '+thY; document.getElementById('th-prev-profit').textContent='กำไร '+thYP;
   function toMap(md,key){const m={};if(md)md.forEach(x=>{m[x.month]=x[key]||0;});return m;}
   const cI=toMap(cur?.monthlyData,'income'),cE=toMap(cur?.monthlyData,'expense'),cP=toMap(cur?.monthlyData,'profit');
   const pI=toMap(prev?.monthlyData,'income'),pE=toMap(prev?.monthlyData,'expense'),pP=toMap(prev?.monthlyData,'profit');
-  const fmt=n=>n?Number(n).toLocaleString('th-TH'):'-', pc=n=>n>0?'#16A34A':n<0?'#DC2626':'#6B7280';
+  const fmt=n=>n?Number(n).toLocaleString('th-TH'):'-',pc=n=>n>0?'#16A34A':n<0?'#DC2626':'#6B7280';
   const tbody=document.getElementById('compare-tbody'); tbody.innerHTML='';
-  const all=new Set([...Object.keys(cI),...Object.keys(pI)]), sorted=MONTH_LABELS.filter(m=>all.has(m));
+  const all=new Set([...Object.keys(cI),...Object.keys(pI)]),sorted=MONTH_LABELS.filter(m=>all.has(m));
   let tCI=0,tPI=0,tCE=0,tPE=0,tCP=0,tPP=0;
   sorted.forEach(m=>{
     const ci=cI[m]||0,pi=pI[m]||0,ce=cE[m]||0,pe=pE[m]||0,cp=cP[m]||0,pp=pP[m]||0;
