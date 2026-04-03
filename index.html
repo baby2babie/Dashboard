@@ -156,7 +156,28 @@
     <button class="btn-save" id="btn-save" onclick="saveMeter()">💾 บันทึกชั้นนี้</button>
   </div>
 </div>
-
+<!-- ===== PRINT MODAL ===== -->
+<div id="print-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-end;justify-content:center">
+  <div style="background:var(--bg);border-radius:20px 20px 0 0;width:100%;max-height:85vh;overflow-y:auto;padding:20px 16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <span style="font-size:18px;font-weight:700;color:var(--text-1)">🖨️ เลือกห้องที่จะพิมพ์</span>
+      <button onclick="closePrintModal()" style="border:none;background:none;font-size:22px;color:var(--text-3);cursor:pointer">✕</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button onclick="selectAllRooms(true)"  style="flex:1;padding:10px;border-radius:12px;border:none;background:var(--bg);box-shadow:var(--neu-out);font-size:14px;font-weight:700;font-family:'Sarabun',sans-serif;color:var(--teal);cursor:pointer">✅ ทั้งหมด</button>
+      <button onclick="selectAllRooms(false)" style="flex:1;padding:10px;border-radius:12px;border:none;background:var(--bg);box-shadow:var(--neu-out);font-size:14px;font-weight:700;font-family:'Sarabun',sans-serif;color:var(--text-3);cursor:pointer">☐ ล้าง</button>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:8px">ชั้น 1</div>
+    <div id="rooms-floor1" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px"></div>
+    <div style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:8px">ชั้น 2</div>
+    <div id="rooms-floor2" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px"></div>
+    <div style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:8px">ชั้น 3</div>
+    <div id="rooms-floor3" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px"></div>
+    <button onclick="doPrint()" style="width:100%;padding:16px;background:linear-gradient(135deg,var(--teal),var(--blue));color:white;border:none;border-radius:99px;font-size:18px;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer">
+      🖨️ พิมพ์เลย
+    </button>
+  </div>
+</div>
 <!-- ===== YEARLY ===== -->
 <div class="page" id="page-yearly">
   <select class="year-select" id="year-select" onchange="loadYearly()"></select>
@@ -228,6 +249,14 @@
     </div>
   </button>
 
+    <button class="drawer-item" onclick="openPrintModal()">
+  <div class="drawer-item-icon" style="background:#F0FDF4">🖨️</div>
+  <div>
+    <div class="drawer-item-label">พิมพ์บิล</div>
+    <div class="drawer-item-sub">4 ห้อง/หน้า A4</div>
+  </div>
+</button>
+    
   <button class="drawer-item" id="drawer-create-bill" onclick="drawerToLine()">
     <div class="drawer-item-icon" style="background:#DCFCE7">📋</div>
     <div>
@@ -682,7 +711,162 @@ function renderCompareTable(data,year) {
   tfr.innerHTML=`<td>รวม</td><td class="text-income">${fmt(tCI)}</td><td style="color:#6B7280">${fmt(tPI)}</td><td class="text-expense">${fmt(tCE)}</td><td style="color:#9CA3AF">${fmt(tPE)}</td><td style="color:${pc(tCP)}">${fmt(tCP)}</td><td style="color:${pc(tPP)}">${fmt(tPP)}</td>`;
   tbody.appendChild(tfr);
 }
+// ============================================================
+//  PRINT BILL
+// ============================================================
+const PRINT_ROOMS = {
+  1:[101,102,103,104,105,106,107,108,109,110],
+  2:[201,202,203,204,205,206,207,208,209,210],
+  3:[301,302,303,304,305,306,307,308,309,310]
+};
+let selectedPrintRooms = new Set();
+let cachedBillData = null;
 
+function openPrintModal() {
+  closeDrawer();
+  selectedPrintRooms = new Set(
+    [...PRINT_ROOMS[1],...PRINT_ROOMS[2],...PRINT_ROOMS[3]].map(String)
+  );
+  [1,2,3].forEach(f => {
+    document.getElementById('rooms-floor'+f).innerHTML =
+      PRINT_ROOMS[f].map(r => `
+        <button id="chk-${r}" onclick="togglePrintRoom(${r})"
+          style="padding:10px 4px;border-radius:12px;border:none;cursor:pointer;
+          font-size:14px;font-weight:700;font-family:'Sarabun',sans-serif;
+          background:var(--bg);color:var(--teal);
+          box-shadow:inset 4px 4px 8px var(--shadow-d),inset -4px -4px 8px var(--shadow-l)">
+          ${r}
+        </button>`).join('');
+  });
+  document.getElementById('print-overlay').style.display = 'flex';
+}
+
+function closePrintModal() {
+  document.getElementById('print-overlay').style.display = 'none';
+}
+
+function togglePrintRoom(room) {
+  const key = String(room);
+  const btn = document.getElementById('chk-'+room);
+  if (selectedPrintRooms.has(key)) {
+    selectedPrintRooms.delete(key);
+    btn.style.cssText = btn.style.cssText.replace(/color:[^;]+/,'color:var(--text-3)');
+    btn.style.boxShadow = '8px 8px 16px var(--shadow-d),-8px -8px 16px var(--shadow-l)';
+  } else {
+    selectedPrintRooms.add(key);
+    btn.style.color = 'var(--teal)';
+    btn.style.boxShadow = 'inset 4px 4px 8px var(--shadow-d),inset -4px -4px 8px var(--shadow-l)';
+  }
+}
+
+function selectAllRooms(val) {
+  [1,2,3].forEach(f => {
+    PRINT_ROOMS[f].forEach(r => {
+      const key = String(r);
+      const btn = document.getElementById('chk-'+r);
+      if (!btn) return;
+      if (val) {
+        selectedPrintRooms.add(key);
+        btn.style.color = 'var(--teal)';
+        btn.style.boxShadow = 'inset 4px 4px 8px var(--shadow-d),inset -4px -4px 8px var(--shadow-l)';
+      } else {
+        selectedPrintRooms.delete(key);
+        btn.style.color = 'var(--text-3)';
+        btn.style.boxShadow = '8px 8px 16px var(--shadow-d),-8px -8px 16px var(--shadow-l)';
+      }
+    });
+  });
+}
+
+async function doPrint() {
+  if (selectedPrintRooms.size === 0) { showToast('⚠️ เลือกห้องก่อนค่ะ','error'); return; }
+  showToast('⏳ กำลังโหลดข้อมูล...','success',5000);
+
+  const month = document.getElementById('month-select').value;
+  try {
+    const data = await callGAS('getDashboardPrintData', { monthKey: month });
+    if (!data.success) { showToast('❌ โหลดข้อมูลไม่ได้','error'); return; }
+
+    const rooms = data.bills.filter(b => selectedPrintRooms.has(String(b.room)));
+    const html  = buildPrintHTML(rooms, data.month, data.dormName, data.adminPhone, data.payMethod);
+
+    const win = window.open('','_blank');
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 800);
+    closePrintModal();
+  } catch(e) { showToast('❌ '+e.message,'error'); }
+}
+
+function buildPrintHTML(rooms, month, dormName, adminPhone, payMethod) {
+  function fmt(n) { return n > 0 ? Number(n).toLocaleString('th-TH') : '-'; }
+
+  function billCard(b) {
+    return `
+    <div class="bill">
+      <div class="bill-header">
+        <div class="dorm-name">${dormName}</div>
+        <div class="bill-title">ใบแจ้งค่าใช้จ่าย</div>
+        <div class="room-no">${b.room}</div>
+        <div class="month">${month}</div>
+      </div>
+      <table>
+        <tr><td>ค่าเช่าห้อง</td><td class="amt">${fmt(b.rent)}</td></tr>
+        <tr class="sub"><td colspan="2">${b.waterOld}→${b.waterNew} (${b.waterUnit}u × ${b.waterPrice}฿)</td></tr>
+        <tr><td>ค่าน้ำ</td><td class="amt">${fmt(b.water)}</td></tr>
+        <tr class="sub"><td colspan="2">${b.elecOld}→${b.elecNew} (${b.elecUnit}u × ${b.elecPrice}฿)</td></tr>
+        <tr><td>ค่าไฟ</td><td class="amt">${fmt(b.elec)}</td></tr>
+        ${b.common > 0 ? `<tr><td>ส่วนกลาง</td><td class="amt">${fmt(b.common)}</td></tr>` : ''}
+        ${b.park   > 0 ? `<tr><td>ค่าจอดรถ</td><td class="amt">${fmt(b.park)}</td></tr>`   : ''}
+        ${b.other  > 0 ? `<tr><td>ค่าบริการอื่นๆ</td><td class="amt">${fmt(b.other)}</td></tr>` : ''}
+        ${b.disc   > 0 ? `<tr class="disc"><td>ส่วนลด</td><td class="amt">-${fmt(b.disc)}</td></tr>` : ''}
+        ${b.checkin> 0 ? `<tr class="disc"><td>แต้มเช็คอิน</td><td class="amt">-${fmt(b.checkin)}</td></tr>` : ''}
+      </table>
+      <div class="total-row">
+        <span>รวม</span>
+        <span class="total-amt">${Number(b.total).toLocaleString('th-TH')} บาท</span>
+      </div>
+      <div class="pay">${payMethod}</div>
+      <div class="footer">ติดต่อ ${adminPhone}</div>
+    </div>`;
+  }
+
+  // จัด 4 ห้องต่อหน้า
+  let pages = '';
+  for (let i = 0; i < rooms.length; i += 4) {
+    const group = rooms.slice(i, i+4);
+    pages += `<div class="page"><div class="grid">${group.map(billCard).join('')}</div></div>`;
+  }
+
+  return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  @page { size: A4 landscape; margin: 8mm; }
+  * { box-sizing:border-box; font-family:Arial,sans-serif; }
+  body { margin:0; }
+  .page { width:277mm; min-height:190mm; page-break-after:always; }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:4mm; height:100%; }
+  .bill { border:1px solid #555; padding:3mm; font-size:7.5pt; display:flex; flex-direction:column; }
+  .bill-header { text-align:center; border-bottom:1px solid #555; padding-bottom:2mm; margin-bottom:2mm; }
+  .dorm-name { font-size:8pt; font-weight:bold; }
+  .bill-title { font-size:6.5pt; color:#555; }
+  .room-no { font-size:22pt; font-weight:bold; line-height:1.1; }
+  .month { font-size:7.5pt; }
+  table { width:100%; border-collapse:collapse; flex:1; }
+  td { padding:0.8mm 0; }
+  td:last-child { text-align:right; }
+  .sub td { font-size:6pt; color:#777; padding:0; }
+  .disc td { color:#16A34A; }
+  .amt { font-weight:bold; }
+  .total-row { display:flex; justify-content:space-between; border-top:1.5px solid #333; padding-top:2mm; margin-top:2mm; font-weight:bold; }
+  .total-amt { font-size:12pt; }
+  .pay { font-size:6pt; color:#333; text-align:center; margin-top:2mm; }
+  .footer { font-size:6pt; color:#777; text-align:center; margin-top:1mm; }
+  @media print { .page { page-break-after:always; } }
+</style>
+</head><body>${pages}</body></html>`;
+}
 init();
 </script>
 </body>
