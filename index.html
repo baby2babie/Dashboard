@@ -120,6 +120,18 @@
 <!-- ===== METER ===== -->
 <div class="page" id="page-meter">
   <div class="meter-month-bar">📅 บันทึกมิเตอร์เดือน: <span id="meter-month">...</span></div>
+  <!-- ===== GLOBAL PRICE BAR ===== -->
+<div class="global-price-bar">
+  <div class="gp-cell">
+    <div class="gp-label">💧 น้ำ (฿/หน่วย)</div>
+    <input type="number" class="gp-input" id="g-water" value="26" step="0.5" oninput="applyGlobalPrice()">
+  </div>
+  <div class="gp-cell">
+    <div class="gp-label">⚡ ไฟ (฿/หน่วย)</div>
+    <input type="number" class="gp-input" id="g-elec" value="5" step="0.5" oninput="applyGlobalPrice()">
+  </div>
+  <button class="gp-btn" onclick="applyGlobalPrice()">ใช้<br>ทั้งหมด</button>
+</div>
   <div class="floor-tabs">
     <button class="floor-tab active" id="tab1" onclick="switchFloor(1)">ชั้น 1</button>
     <button class="floor-tab"        id="tab2" onclick="switchFloor(2)">ชั้น 2</button>
@@ -135,19 +147,22 @@
   <div class="table-wrap">
     <table style="min-width:340px">
       <colgroup>
-        <col style="width:15%"><col style="width:14%"><col style="width:21%">
-        <col style="width:14%"><col style="width:21%"><col style="width:15%">
-      </colgroup>
-      <thead>
-        <tr>
-          <th></th>
-          <th style="color:#9CA3AF;font-size:11px">น้ำเก่า</th>
-          <th>💧 น้ำ</th>
-          <th style="color:#9CA3AF;font-size:11px">ไฟเก่า</th>
-          <th>⚡ ไฟ</th>
-          <th></th>
-        </tr>
-      </thead>
+  <col style="width:13%"><col style="width:11%"><col style="width:17%">
+  <col style="width:11%"><col style="width:11%"><col style="width:17%">
+  <col style="width:11%"><col style="width:9%">
+</colgroup>
+<thead>
+  <tr>
+    <th></th>
+    <th style="color:#9CA3AF;font-size:11px">น้ำเก่า</th>
+    <th>💧 น้ำ</th>
+    <th style="color:#27A896;font-size:10px">฿/u</th>
+    <th style="color:#9CA3AF;font-size:11px">ไฟเก่า</th>
+    <th>⚡ ไฟ</th>
+    <th style="color:#27A896;font-size:10px">฿/u</th>
+    <th></th>
+  </tr>
+</thead>
       <tbody id="meter-table"></tbody>
     </table>
   </div>
@@ -553,30 +568,67 @@ function switchFloor(floor) {
   document.getElementById('result-box').classList.remove('show');
 }
 function renderTable(floor) {
-  const tbody=document.getElementById('meter-table');
-  tbody.innerHTML='';
-  ROOMS[floor].forEach(room=>{
-    const isSaved=savedRooms[floor].has(room);
-    const d=meterOldMap[String(room)]||{waterOld:'?',elecOld:'?',waterNew:0,elecNew:0};
-    const hasNew=d.waterNew>0||d.elecNew>0;
-    const tr=document.createElement('tr');
-    tr.className='room-row'+(isSaved?' saved':'');
-    if(hasNew) tr.classList.add('has-filled');
-    tr.id='row_'+room;
-    if(isSaved){
-      tr.innerHTML=`<td>${room}<div class="saved-badge">✓</div></td><td class="old-val">${d.waterOld}</td><td><input type="number" id="w_${room}" class="saved-input" placeholder="✓" disabled></td><td class="old-val">${d.elecOld}</td><td><input type="number" id="e_${room}" class="saved-input" placeholder="✓" disabled></td><td>${room}<div class="saved-badge">✓</div></td>`;
+  const tbody = document.getElementById('meter-table');
+  tbody.innerHTML = '';
+  ROOMS[floor].forEach(room => {
+    const isSaved = savedRooms[floor].has(room);
+    const d = meterOldMap[String(room)] || { waterOld:'?', elecOld:'?', waterNew:0, elecNew:0 };
+    const hasNew = d.waterNew > 0 || d.elecNew > 0;
+    const wp = customWaterPrice[room] !== undefined ? customWaterPrice[room] : globalWaterPrice;
+    const ep = customElecPrice[room]  !== undefined ? customElecPrice[room]  : globalElecPrice;
+    const isCustomW = customWaterPrice[room] !== undefined;
+    const isCustomE = customElecPrice[room]  !== undefined;
+    const tr = document.createElement('tr');
+    tr.className = 'room-row' + (isSaved ? ' saved' : '');
+    if (hasNew) tr.classList.add('has-filled');
+    tr.id = 'row_' + room;
+
+    if (isSaved) {
+      tr.innerHTML = `
+        <td>${room}<div class="saved-badge">✓</div></td>
+        <td class="old-val">${d.waterOld}</td>
+        <td><input type="number" id="w_${room}" class="saved-input" placeholder="✓" disabled></td>
+        <td><input type="number" id="wp_${room}" class="price-normal" value="${wp}" disabled></td>
+        <td class="old-val">${d.elecOld}</td>
+        <td><input type="number" id="e_${room}" class="saved-input" placeholder="✓" disabled></td>
+        <td><input type="number" id="ep_${room}" class="price-normal" value="${ep}" disabled></td>
+        <td>${room}<div class="saved-badge">✓</div></td>`;
     } else {
-      const ip=userRole==='PARTNER';
-      tr.innerHTML=`
+      const ip = userRole === 'PARTNER';
+      tr.innerHTML = `
         <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>
         <td class="old-val">${d.waterOld}</td>
-        <td><input type="number" id="w_${room}" placeholder="${ip?'-':'กรอก'}" inputmode="numeric" ${ip?'disabled style="opacity:0.5"':`oninput="validateMeter(this,${d.waterOld})"`}></td>
+        <td><input type="number" id="w_${room}" placeholder="${ip?'-':'กรอก'}" inputmode="numeric"
+          ${ip?'disabled style="opacity:0.5"':`oninput="validateMeter(this,${d.waterOld})"`}></td>
+        <td><input type="number" id="wp_${room}" class="${isCustomW?'price-custom':'price-normal'}"
+          value="${wp}" inputmode="decimal" step="0.5"
+          ${ip?'disabled style="opacity:0.5"':`oninput="setCustomWater(${room},this.value)"`}></td>
         <td class="old-val">${d.elecOld}</td>
-        <td><input type="number" id="e_${room}" placeholder="${ip?'-':'กรอก'}" inputmode="numeric" ${ip?'disabled style="opacity:0.5"':`oninput="validateMeter(this,${d.elecOld})"`}></td>
+        <td><input type="number" id="e_${room}" placeholder="${ip?'-':'กรอก'}" inputmode="numeric"
+          ${ip?'disabled style="opacity:0.5"':`oninput="validateMeter(this,${d.elecOld})"`}></td>
+        <td><input type="number" id="ep_${room}" class="${isCustomE?'price-custom':'price-normal'}"
+          value="${ep}" inputmode="decimal" step="0.5"
+          ${ip?'disabled style="opacity:0.5"':`oninput="setCustomElec(${room},this.value)"`}></td>
         <td>${room}${hasNew?'<div class="has-val-badge">✅</div>':''}</td>`;
     }
     tbody.appendChild(tr);
   });
+}
+
+function setCustomWater(room, val) {
+  const v = Number(val);
+  if (v === globalWaterPrice) delete customWaterPrice[room];
+  else customWaterPrice[room] = v;
+  const el = document.getElementById('wp_'+room);
+  if (el) el.className = customWaterPrice[room] !== undefined ? 'price-custom' : 'price-normal';
+}
+
+function setCustomElec(room, val) {
+  const v = Number(val);
+  if (v === globalElecPrice) delete customElecPrice[room];
+  else customElecPrice[room] = v;
+  const el = document.getElementById('ep_'+room);
+  if (el) el.className = customElecPrice[room] !== undefined ? 'price-custom' : 'price-normal';
 }
 function validateMeter(input,oldVal) {
   const val=Number(input.value);
@@ -598,8 +650,13 @@ async function saveMeter() {
     const wEl=document.getElementById('w_'+room),eEl=document.getElementById('e_'+room);
     if(wEl?.classList.contains('error-input')||eEl?.classList.contains('error-input')){hasError=true;return;}
     const w=wEl?.value,e=eEl?.value;
-    if(w||e) meters.push({room:String(room),water:w||"0",electric:e||"0"});
-  });
+    if (w||e) meters.push({
+  room    : String(room),
+  water   : w||"0",
+  electric: e||"0",
+  waterPrice: Number(document.getElementById('wp_'+room)?.value) || globalWaterPrice,
+  elecPrice : Number(document.getElementById('ep_'+room)?.value) || globalElecPrice
+});
   if(hasError){showToast('⚠️ มีค่ามิเตอร์ต่ำกว่าค่าเก่า กรุณาตรวจสอบค่ะ','error');return;}
   if(!meters.length){showToast('⚠️ ไม่มีข้อมูลใหม่ที่ต้องบันทึกค่ะ','error');return;}
   btn.disabled=true; btn.textContent='⏳ กำลังบันทึก...';
@@ -681,7 +738,32 @@ function renderCompareTable(data,year) {
   tfr.innerHTML=`<td>รวม</td><td class="text-income">${fmt(tCI)}</td><td style="color:#6B7280">${fmt(tPI)}</td><td class="text-expense">${fmt(tCE)}</td><td style="color:#9CA3AF">${fmt(tPE)}</td><td style="color:${pc(tCP)}">${fmt(tCP)}</td><td style="color:${pc(tPP)}">${fmt(tPP)}</td>`;
   tbody.appendChild(tfr);
 }
+// ============================================================
+//  GLOBAL PRICE
+// ============================================================
+let globalWaterPrice = 26, globalElecPrice = 5;
+const customWaterPrice = {}, customElecPrice = {};
 
+function applyGlobalPrice() {
+  globalWaterPrice = Number(document.getElementById('g-water').value) || 0;
+  globalElecPrice  = Number(document.getElementById('g-elec').value)  || 0;
+  // อัปเดตทุกห้องที่ยังไม่ได้ custom
+  [1,2,3].forEach(f => {
+    ROOMS[f].forEach(room => {
+      const wpEl = document.getElementById('wp_'+room);
+      const epEl = document.getElementById('ep_'+room);
+      if (!wpEl || !epEl) return;
+      if (!customWaterPrice[room]) {
+        wpEl.value     = globalWaterPrice;
+        wpEl.className = 'price-normal';
+      }
+      if (!customElecPrice[room]) {
+        epEl.value     = globalElecPrice;
+        epEl.className = 'price-normal';
+      }
+    });
+  });
+}
 init();
 </script>
 </body>
