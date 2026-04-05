@@ -651,12 +651,14 @@ async function saveMeter() {
     if(wEl?.classList.contains('error-input')||eEl?.classList.contains('error-input')){hasError=true;return;}
     const w=wEl?.value,e=eEl?.value;
     if (w||e) meters.push({
-  room    : String(room),
-  water   : w||"0",
-  electric: e||"0",
-  waterPrice: Number(document.getElementById('wp_'+room)?.value) || globalWaterPrice,
-  elecPrice : Number(document.getElementById('ep_'+room)?.value) || globalElecPrice
-});
+      room    : String(room),
+      water   : w||"0",
+      electric: e||"0",
+      waterPrice: Number(document.getElementById('wp_'+room)?.value) || globalWaterPrice,
+      elecPrice : Number(document.getElementById('ep_'+room)?.value) || globalElecPrice
+    });
+  }); // ← เพิ่มตรงนี้
+  if(hasError){showToast('⚠️ มีค่ามิเตอร์ต่ำกว่าค่าเก่า กรุณาตรวจสอบค่ะ','error');return;}
   if(hasError){showToast('⚠️ มีค่ามิเตอร์ต่ำกว่าค่าเก่า กรุณาตรวจสอบค่ะ','error');return;}
   if(!meters.length){showToast('⚠️ ไม่มีข้อมูลใหม่ที่ต้องบันทึกค่ะ','error');return;}
   btn.disabled=true; btn.textContent='⏳ กำลังบันทึก...';
